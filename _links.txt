@@ -1,0 +1,69 @@
+order-independent transparency:
+https://tsherif.github.io/webgl2examples/oit.html
+https://github.com/mrdoob/three.js/issues/9977
+@arose demo & code:
+https://github.com/mrdoob/three.js/issues/4814
+
+
+state management, modal dialogs:
+https://stackoverflow.com/questions/35623656/how-can-i-display-a-modal-dialog-in-redux-that-performs-asynchronous-actions/35641680#
+reducers
+https://redux.js.org/basics/reducers
+
+
+vuex with types:
+https://codeburst.io/vuex-and-typescript-3427ba78cfa8
+discussion:
+https://github.com/vuejs/vuex/issues/564
+https://github.com/Anonyfox/vuex-store-module-example
+
+
+Hammer.js, gesture recognition:
+https://www.npmjs.com/package/hammerjs
+https://www.npmjs.com/package/@types/hammerjs
+presentation for angular:
+https://saschwarz.github.io/angular2-gestures-slides/#/
+
+
+vue 3.0 announcement:
+https://medium.com/the-vue-point/plans-for-the-next-iteration-of-vue-js-777ffea6fabf
+
+
+using font-awesome icons:
+https://fontawesome.com/how-to-use/with-the-api/setup/importing-icons
+https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers
+
+
+inline .svg:
+https://stackoverflow.com/questions/49459262/vue-cli-3-is-not-allowing-me-to-process-svgs-in-webpack
+
+
+A Complete Guide to Flexbox
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+
+
+Fullscreen, manifest
+https://developers.google.com/web/fundamentals/native-hardware/fullscreen/
+
+
+Strange 3px margin and how to fix it:
+https://stackoverflow.com/questions/10844205/html-5-strange-img-always-adds-3px-margin-at-bottom
+
+
+Vue 2.6:
+https://medium.com/the-vue-point/vue-2-6-released-66aa6c8e785e
+
+
+mobx discussion about state organizing
+https://github.com/mobxjs/mobx/issues/832
+// note: it is explained in 'decorators' section of docs
+
+difference between observable.shallow and readonly observable.array
+https://github.com/mobxjs/mobx/issues/1489
+
+
+three.js, dispose resources:
+https://github.com/mrdoob/three.js/issues/11345
+https://github.com/mrdoob/three.js/pull/15719
+https://threejs.org/examples/?q=memory
+

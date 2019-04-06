@@ -1,0 +1,28 @@
+{
+  "name": "prototype",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "mobx": "^5.9.4",
+    "mobx-vue": "^2.0.8",
+    "three": "^0.103.0",
+    "vue": "^2.6.10",
+    "vue-property-decorator": "^8.1.0"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.1",
+    "@types/three": "^0.93.30",
+    "@vue/cli-plugin-typescript": "^3.5.3",
+    "@vue/cli-service": "^3.5.3",
+    "node-sass": "^4.11.0",
+    "sass-loader": "^7.0.1",
+    "typescript": "^3.4.2",
+    "vue-template-compiler": "^2.6.10",
+    "worker-loader": "^2.0.0"
+  }
+}
