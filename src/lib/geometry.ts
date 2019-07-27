@@ -452,7 +452,7 @@ export function mesh(sizeX: number, sizeY: number, f: (x: number, y: number) => 
 
 /**
  * Creates grid-like geometry for THREE.Mesh.
- * Adds 'height' attribute to geometry, to make usable it with terrain material.
+ * Adds 'height' attribute to geometry, to make it usable with terrain material.
  * @param sizeX grid cells count on X axis.
  * @param sizeY grid cells count on Y axis.
  * @param f generator function, for given (x, y) computes vertex coordinate.

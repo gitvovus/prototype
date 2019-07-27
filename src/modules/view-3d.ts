@@ -35,12 +35,11 @@ export class View3d extends List<string> {
   }
 
   public deactivate() {
-    for (const disposer of this.disposers) {
-      disposer();
-    }
+    this.disposers.forEach(disposer => disposer());
     this.disposers = [];
     if (this.scene) {
       this.scene.dispose();
+      this.scene = undefined;
     }
   }
 }

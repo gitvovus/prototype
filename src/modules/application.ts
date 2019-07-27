@@ -6,6 +6,7 @@ import App from '@/components/app.vue';
 import { List } from '@/modules/list';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
+import { SvgScene } from '@/modules/svg-scene';
 
 export class Layout {
   public readonly id!: string;
@@ -50,14 +51,17 @@ export class Application {
       new Layout('view2d', 'icon-view2d', '2D view', true,  false),
       new Layout('views',  'icon-views',  '3D + 2D', true,  true ),
     ],
-    0,
+    2,
   );
   public readonly view3d = new View3d();
   public readonly view2d = new View2d();
   public readonly tools = new Tools('tools', 'icon-tools', 'Tools', false);
   public readonly lorem = new Tools('lorem', 'icon-tools', 'Lorem', false);
+  public readonly svg = new Tools('svg', 'icon-tools', 'SVG', false);
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
+
+  public readonly svgScene = new SvgScene();
 
   private vue!: Vue;
 
@@ -98,6 +102,9 @@ export class Application {
         break;
       case 'Digit3':
         this.layouts.selectedIndex = 0;
+        break;
+      case 'KeyS':
+        this.svg.show = !this.svg.show;
         break;
       case 'KeyT':
         this.tools.show = !this.tools.show;

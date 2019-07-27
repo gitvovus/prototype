@@ -5,6 +5,7 @@
       :key="index+100" :id="item.id" :value="index" v-model="layouts.selectedIndex">
     <input type="checkbox" :id="tools.id" v-model="tools.show">
     <input type="checkbox" :id="lorem.id" v-model="lorem.show">
+    <input type="checkbox" :id="svg.id" v-model="svg.show">
     <input type="checkbox" :id="modal.id" v-model="modal.show">
     <input type="checkbox" :id="fullscreen.id" v-model="fullscreen.show">
   </div>
@@ -16,6 +17,7 @@
       <span class="separator"/>
       <label :for="tools.id" :class="{ active: tools.show }">{{tools.label}}</label>
       <label :for="lorem.id" :class="{ active: lorem.show }">{{lorem.label}}</label>
+      <label :for="svg.id" :class="{ active: svg.show }">{{svg.label}}</label>
       <span class="separator"/>
       <label :for="modal.id" :class="{ active: modal.show }">{{modal.label}}</label>
     </div>
@@ -65,7 +67,7 @@
       <div class="lorem-header">
         <div class="lorem-title">Lorem</div>
       </div>
-      <div class="lorem-content" style="pointer-events: auto">
+      <div class="lorem-content">
         <div class="article">
           <div class="column" style="background-color: #ffffe0">
             <lorem/>
@@ -76,6 +78,9 @@
         </div>
       </div>
     </div>
+  </floating>
+  <floating v-show="svg.show">
+    <view-svg :model="model.svgScene"/>
   </floating>
   <modal :model="modal">
     <div class="article">
@@ -121,6 +126,10 @@ export default class Views extends Vue {
 
   private get lorem() {
     return this.model.lorem;
+  }
+
+  private get svg() {
+    return this.model.svg;
   }
 
   private get modal() {
@@ -179,6 +188,7 @@ export default class Views extends Vue {
 .lorem-content {
   flex: 1 1 auto;
   overflow: auto;
+  pointer-events: auto;
 }
 .article {
   display: flex;
