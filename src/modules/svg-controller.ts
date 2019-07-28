@@ -1,6 +1,6 @@
 import { action, computed, observable, reaction } from 'mobx';
 import * as std from '@/lib/std';
-import { Svg } from '@/modules/svg/svg';
+import { Svg } from '@/lib/svg/svg';
 
 export class Controller {
   @observable public left = 0;
@@ -45,7 +45,7 @@ export class Controller {
     this.root.addEventListener('keydown', this.keyDown);
     this.disposers = [
       reaction(
-        () => [ this.width, this.height ],
+        () => [this.width, this.height],
         () => this.update(),
         { fireImmediately: true },
       ),
@@ -60,6 +60,11 @@ export class Controller {
     this.root.removeEventListener('pointerup', this.drop);
     this.root.removeEventListener('wheel', this.wheel);
     this.root.removeEventListener('keydown', this.keyDown);
+  }
+
+  @action public resize() {
+    this.baseWidth = this.root.clientWidth;
+    this.baseHeight = this.root.clientHeight;
   }
 
   private center() {
@@ -92,6 +97,7 @@ export class Controller {
   private pick = (e: PointerEvent) => {
     if (e.buttons & 1) {
       e.preventDefault();
+      this.root.focus();
       const rect = this.root.getBoundingClientRect();
       const offsetX = e.clientX - rect.left;
       const offsetY = e.clientY - rect.top;

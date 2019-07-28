@@ -5,7 +5,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { Observer } from 'mobx-vue';
-import { Use } from '@/modules/svg/use';
+import { Use } from '@/lib/svg/use';
 
 @Observer
 @Component

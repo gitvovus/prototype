@@ -1,8 +1,8 @@
 import { observable } from 'mobx';
 
-import { Item, ItemOptions, combineItemOptions } from '@/modules/svg/item';
+import { Item, Options, combine } from '@/lib/svg/item';
 
-export interface ImageOptions extends ItemOptions {
+export interface ImageOptions extends Options {
   x: number;
   y: number;
   width: number;
@@ -18,6 +18,6 @@ export class Image extends Item {
   @observable public href!: string;
 
   public constructor(options?: Partial<ImageOptions>) {
-    super(combineItemOptions({ tag: 'image' }, options));
+    super(combine({ tag: 'image' }, options));
   }
 }

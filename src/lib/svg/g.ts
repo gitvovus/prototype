@@ -1,8 +1,8 @@
 import { observable } from 'mobx';
 
-import { Container, ItemOptions, combineItemOptions } from '@/modules/svg/item';
+import { Container, Options, combine } from '@/lib/svg/item';
 
-export interface GOptions extends ItemOptions {
+export interface GOptions extends Options {
   id: string;
   viewBox: string;
   width: number;
@@ -18,6 +18,6 @@ export class G extends Container {
   @observable public transform!: string;
 
   public constructor(options?: Partial<GOptions>) {
-    super(combineItemOptions({ tag: 'g' }, options));
+    super(combine({ tag: 'g' }, options));
   }
 }

@@ -1,8 +1,8 @@
 import { observable } from 'mobx';
 
-import { Item, ItemOptions, combineItemOptions } from '@/modules/svg/item';
+import { Item, Options, combine } from '@/lib/svg/item';
 
-export interface CircleOptions extends ItemOptions {
+export interface CircleOptions extends Options {
   cx: number;
   cy: number;
   r: number;
@@ -16,6 +16,6 @@ export class Circle extends Item {
   @observable public fill!: string;
 
   public constructor(options?: Partial<CircleOptions>) {
-    super(combineItemOptions({ tag: 'circle' }, options));
+    super(combine({ tag: 'circle' }, options));
   }
 }

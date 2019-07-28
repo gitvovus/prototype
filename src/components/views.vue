@@ -79,7 +79,7 @@
       </div>
     </div>
   </floating>
-  <floating v-show="svg.show">
+  <floating v-show="svg.show" @resize="model.svgScene.resize()">
     <view-svg :model="model.svgScene"/>
   </floating>
   <modal :model="modal">
@@ -208,7 +208,7 @@ export default class Views extends Vue {
   padding: $padding-menu;
   color: white;
   text-shadow: $shadow-text;
-  background-color: $bg-menu-medium;
+  background-color: $bg-menu-hover;
 }
 .slider-container {
   margin: 10px;

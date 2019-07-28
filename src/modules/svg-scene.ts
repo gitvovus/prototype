@@ -1,5 +1,5 @@
 import * as img from '@/lib/images';
-import * as svg from '@/modules/svg';
+import * as svg from '@/lib/svg';
 
 import { Controller } from '@/modules/svg-controller';
 
@@ -15,7 +15,7 @@ export class SvgScene {
     this.controller = new Controller(this.model);
   }
 
-  public activate(el: HTMLDivElement) {
+  public activate(el: HTMLElement) {
     this.controller.activate(el);
   }
 
@@ -23,6 +23,10 @@ export class SvgScene {
     if (this.controller) {
       this.controller.dispose();
     }
+  }
+
+  public resize() {
+    this.controller.resize();
   }
 
   private createModel() {

@@ -4,7 +4,7 @@
     <div class="lorem-title">SVG: {{model.controller.left.toFixed()}} {{model.controller.top.toFixed()}}</div>
   </div>
   <div class="lorem-content">
-    <div class="svg-container">
+    <div class="svg-container" tabindex="0">
       <svg-item class="svg" :style="{ left: `${model.controller.left}px`, top: `${model.controller.top}px` }" :model="model.model"/>
     </div>
   </div>
@@ -24,7 +24,7 @@ export default class ViewSvg extends Vue {
   @Prop() private model!: Model;
 
   private mounted() {
-    this.model.activate(this.$el.getElementsByClassName('svg-container')[0] as HTMLDivElement);
+    this.model.activate(this.$el.getElementsByClassName('svg-container')[0] as HTMLElement);
   }
 
   private beforeDestroy() {
@@ -39,6 +39,7 @@ export default class ViewSvg extends Vue {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  outline: none;
   background-color: rgba(0, 0, 0, 0.75);
 }
 .svg {

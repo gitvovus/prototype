@@ -1,10 +1,10 @@
 import { observable } from 'mobx';
 
-export interface ItemOptions {
+export interface Options {
   tag: string;
 }
 
-export function combineItemOptions(options: Partial<ItemOptions>, add?: Partial<ItemOptions>) {
+export function combine(options: Partial<Options>, add?: Partial<Options>) {
   Object.assign(options, add);
   return options;
 }
@@ -12,8 +12,8 @@ export function combineItemOptions(options: Partial<ItemOptions>, add?: Partial<
 export class Item {
   public readonly tag!: string;
 
-  public constructor(options?: Partial<ItemOptions>) {
-    Object.assign(this, combineItemOptions({ tag: '' }, options));
+  public constructor(options?: Partial<Options>) {
+    Object.assign(this, combine({ tag: '' }, options));
   }
 }
 

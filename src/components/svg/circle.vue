@@ -5,7 +5,7 @@
 <script lang="ts">
 import { Vue, Component, Model } from 'vue-property-decorator';
 import { Observer } from 'mobx-vue';
-import { Circle } from '@/modules/svg/circle';
+import { Circle } from '@/lib/svg/circle';
 
 @Observer
 @Component
