@@ -59,7 +59,7 @@ export class Application {
   public readonly view2d = new View2d();
   public readonly tools = new Tools('tools', 'icon-tools', 'Tools', false);
   public readonly lorem = new Tools('lorem', 'icon-tools', 'Lorem', false);
-  public readonly svg = new Tools('svg', 'icon-tools', 'SVG', false);
+  public readonly svg = new Tools('svg', 'icon-tools', 'SVG', true);
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
 
@@ -78,27 +78,27 @@ export class Application {
   private setupReactions() {
     // TODO: move this code somewhere.
     // Bind view-2d's selected image to svg scene.
-    // let scene: svg.G = undefined!;
-    // for (const item of this.svgScene.model.items) {
-    //   if ((item as any).id === 'scene') {
-    //     scene = item as svg.G;
-    //   }
-    // }
-    // if (scene) {
-    //   let image: svg.Image = undefined!;
-    //   for (const item of scene.items) {
-    //     if ((item as any).id === 'image') {
-    //       image = item as svg.Image;
-    //     }
-    //   }
-    //   if (image) {
-    //     reaction(
-    //       () => this.view2d.selectedItem,
-    //       () => image.href = this.view2d.selectedItem!,
-    //       { fireImmediately: true },
-    //     );
-    //   }
-    // }
+    let scene: svg.Node = undefined!;
+    for (const item of this.svgScene.model.items) {
+      if (item.attributes.id === 'scene') {
+        scene = item;
+      }
+    }
+    if (scene) {
+      let image: svg.Node = undefined!;
+      for (const item of scene.items) {
+        if (item.attributes.id === 'image') {
+          image = item;
+        }
+      }
+      if (image) {
+        reaction(
+          () => this.view2d.selectedItem,
+          () => image.attributes['xlink:href'] = this.view2d.selectedItem!,
+          { fireImmediately: true },
+        );
+      }
+    }
 
     reaction(
       () => [this.layouts.selectedIndex, this.tools.show],
