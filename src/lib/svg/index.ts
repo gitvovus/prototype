@@ -1,8 +1,16 @@
-export * from '@/lib/svg/circle';
-export * from '@/lib/svg/defs';
-export * from '@/lib/svg/g';
-export * from '@/lib/svg/image';
-export * from '@/lib/svg/item';
-export * from '@/lib/svg/path';
-export * from '@/lib/svg/svg';
-export * from '@/lib/svg/use';
+import { observable } from 'mobx';
+
+export interface Attributes {
+  [key: string]: string | number;
+}
+
+export class Node {
+  public readonly tag: string;
+  @observable public readonly attributes: Attributes = {};
+  @observable.shallow public readonly items: Node[] = [];
+
+  public constructor(tag: string, attributes?: Attributes) {
+    this.tag = tag;
+    Object.assign(this.attributes, attributes);
+  }
+}

@@ -54,19 +54,19 @@ export class Controller {
   @observable public offsetY = 0;
   @observable public scale = 1;
 
-  private model!: svg.Svg;
-  private scene!: svg.G;
+  private model!: svg.Node;
+  private scene!: svg.Node;
   private root!: HTMLElement;
 
   private picked = { x: 0, y: 0 };
   private dragging = false;
   private disposers: Array<() => void> = [];
 
-  public constructor(model: svg.Svg) {
+  public constructor(model: svg.Node) {
     this.model = model;
     for (const item of model.items) {
-      if ((item as any).id === 'scene') {
-        this.scene = item as svg.G;
+      if (item.attributes.id === 'scene') {
+        this.scene = item;
       }
     }
   }
@@ -115,10 +115,10 @@ export class Controller {
   }
 
   private update() {
-    this.model.viewBox = this.viewBox;
-    this.model.width = this.width;
-    this.model.height = this.height;
-    this.scene.transform = toAttribute(mulMM(this.transform, this.viewTransform));
+    this.model.attributes.viewBox = this.viewBox;
+    this.model.attributes.width = this.width;
+    this.model.attributes.height = this.height;
+    this.scene.attributes.transform = toAttribute(mulMM(this.transform, this.viewTransform));
   }
 
   @action private reset() {

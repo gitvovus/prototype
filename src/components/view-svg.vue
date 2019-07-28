@@ -9,7 +9,8 @@
   </div>
   <div class="lorem-content">
     <div class="svg-container" tabindex="0">
-      <svg-item :model="model.model"/>
+      <!-- <svg-item :model="model.model"/> -->
+      <svg-node :model="model.model"/>
     </div>
   </div>
 </div>
