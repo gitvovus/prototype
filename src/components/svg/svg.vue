@@ -1,5 +1,12 @@
 <template>
-<svg :viewBox="model.viewBox" :width="model.width" :height="model.height" :fill="model.fill" :opacity="model.opacity">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  :viewBox="model.viewBox"
+  :width="model.width"
+  :height="model.height"
+  :fill="model.fill"
+  :opacity="model.opacity">
   <v-component v-for="(item, index) in model.items" :is="`${item.tag}-item`" :key="index" :model="model.items[index]"/>
 </svg>
 </template>

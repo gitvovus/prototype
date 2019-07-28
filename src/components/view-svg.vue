@@ -1,11 +1,15 @@
 <template>
 <div class="lorem">
   <div class="lorem-header">
-    <div class="lorem-title">SVG: {{model.controller.left.toFixed()}} {{model.controller.top.toFixed()}}</div>
+    <div class="lorem-title">
+      viewport: {{model.controller.width}} &times; {{model.controller.height}} |
+      offset: {{model.controller.offsetX.toFixed()}} {{model.controller.offsetY.toFixed()}} |
+      scale: {{model.controller.scale.toFixed(2)}}
+    </div>
   </div>
   <div class="lorem-content">
     <div class="svg-container" tabindex="0">
-      <svg-item class="svg" :style="{ left: `${model.controller.left}px`, top: `${model.controller.top}px` }" :model="model.model"/>
+      <svg-item :model="model.model"/>
     </div>
   </div>
 </div>
@@ -40,7 +44,7 @@ export default class ViewSvg extends Vue {
   height: 100%;
   overflow: hidden;
   outline: none;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 .svg {
   position: absolute;

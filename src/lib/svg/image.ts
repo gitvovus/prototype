@@ -3,6 +3,7 @@ import { observable } from 'mobx';
 import { Item, Options, combine } from '@/lib/svg/item';
 
 export interface ImageOptions extends Options {
+  id: string;
   x: number;
   y: number;
   width: number;
@@ -11,6 +12,7 @@ export interface ImageOptions extends Options {
 }
 
 export class Image extends Item {
+  @observable public id!: string;
   @observable public x!: number;
   @observable public y!: number;
   @observable public width!: number;

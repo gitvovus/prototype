@@ -3,6 +3,8 @@ import { observable, reaction } from 'mobx';
 
 import App from '@/components/app.vue';
 
+import * as svg from '@/lib/svg';
+
 import { List } from '@/modules/list';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
@@ -74,6 +76,30 @@ export class Application {
   }
 
   private setupReactions() {
+    // TODO: move this code somewhere.
+    // Bind view-2d's selected image to svg scene.
+    // let scene: svg.G = undefined!;
+    // for (const item of this.svgScene.model.items) {
+    //   if ((item as any).id === 'scene') {
+    //     scene = item as svg.G;
+    //   }
+    // }
+    // if (scene) {
+    //   let image: svg.Image = undefined!;
+    //   for (const item of scene.items) {
+    //     if ((item as any).id === 'image') {
+    //       image = item as svg.Image;
+    //     }
+    //   }
+    //   if (image) {
+    //     reaction(
+    //       () => this.view2d.selectedItem,
+    //       () => image.href = this.view2d.selectedItem!,
+    //       { fireImmediately: true },
+    //     );
+    //   }
+    // }
+
     reaction(
       () => [this.layouts.selectedIndex, this.tools.show],
       () => Vue.nextTick(() => window.dispatchEvent(new Event('resize'))),
@@ -81,6 +107,10 @@ export class Application {
     reaction(
       () => this.page,
       () => Vue.nextTick(() => Vue.nextTick(() => window.dispatchEvent(new Event('resize')))),
+    );
+    reaction(
+      () => this.svg.show,
+      () => Vue.nextTick(() => this.svgScene.resize()),
     );
   }
 

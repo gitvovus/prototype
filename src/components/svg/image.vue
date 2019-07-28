@@ -1,5 +1,5 @@
 <template>
-<image :x="model.x" :y="model.y" :width="model.width" :height="model.height" :xlink:href="model.href"/>
+<image :id="model.id" :x="model.x" :y="model.y" :width="model.width" :height="model.height" :xlink:href="model.href"/>
 </template>
 
 <script lang="ts">

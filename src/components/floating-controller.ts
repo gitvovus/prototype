@@ -21,18 +21,15 @@ interface Internal {
 }
 
 export class FloatingController {
-  @observable public left: number = 100;
-  @observable public top: number = 100;
-  @observable public width: number = 800;
-  @observable public height: number = 400;
-  @observable public minWidth: number = 100;
-  @observable public minHeight: number = 50;
+  @observable public left = 0;
+  @observable public top = 0;
+  @observable public width = 1000;
+  @observable public height = 600;
+  @observable public minWidth = 200;
+  @observable public minHeight = 100;
 
   private root!: Element;
   private data!: Internal;
-
-  public constructor() {
-  }
 
   public mount(root: Element) {
     this.root = root;
@@ -52,7 +49,7 @@ export class FloatingController {
     this.data.se.el.removeEventListener('pointerdown', this.data.se.pick);
   }
 
-  public center() {
+  private center() {
     const width = window.innerWidth;
     const height = window.innerHeight;
     this.left = Math.floor(0.5 * (width - this.width));
