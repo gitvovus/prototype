@@ -1,18 +1,41 @@
-import { observable } from 'mobx';
-
-import * as img from '@/lib/images';
+import { observable, reaction } from 'mobx';
 import * as svg from '@/lib/svg';
-
+import { View2d } from '@/modules/view-2d';
 import { Controller } from '@/modules/svg-controller';
+import svgContent from '!!raw-loader!@/assets/scene.svg';
 
 export class SvgScene {
   @observable public model: svg.Node;
 
+  private view2d: View2d;
   private controller!: Controller;
 
-  public constructor() {
-    this.model = this.createModel();
+  public constructor(view2d: View2d) {
+    this.model = svg.parse(svgContent);
+    this.view2d = view2d;
     this.controller = new Controller(this.model);
+
+    let scene: svg.Node = undefined!;
+    for (const item of this.model.items) {
+      if (item.attributes.id === 'scene') {
+        scene = item;
+      }
+    }
+    if (scene) {
+      let image: svg.Node = undefined!;
+      for (const item of scene.items) {
+        if (item.attributes.id === 'image') {
+          image = item;
+        }
+      }
+      if (image) {
+        reaction(
+          () => this.view2d.selectedItem,
+          () => image.attributes.href = this.view2d.selectedItem!,
+          { fireImmediately: true },
+        );
+      }
+    }
   }
 
   public activate(el: HTMLElement) {
@@ -27,34 +50,5 @@ export class SvgScene {
 
   public resize() {
     this.controller.resize();
-  }
-
-  private createModel() {
-    const width = 500;
-    const height = 500;
-    const model = new svg.Node('svg', { viewBox: `0 0 ${width} ${height}`, width, height, fill: 'white' });
-    const defs = new svg.Node('defs');
-    const g = new svg.Node('g', { id: 'cam-pic' });
-    g.items.push(
-      new svg.Node('path', { d: 'M-40 -40v30 h10v-20h20v-10zM40 -40h-30v10h20v20h10zM-40 40h30v-10h-20v-20h-10zM40 40v-30 h-10v20h-20v10z' }),
-      new svg.Node('circle', { cx: 0, cy: 0, r: 20, fill: 'red' }),
-    );
-    defs.items.push(g);
-
-    const groups = [[-200, -200], [200, -200], [-200, 200], [200, 200]].map(([x, y]) => new svg.Node('g', { transform: `translate(${x},${y})`}));
-    groups.forEach(group => group.items.push(new svg.Node('use', { href: '#cam-pic' })));
-
-    const size = 400;
-    const step = 50;
-    const lite: img.RGBA = [0xff, 0xff, 0xff, 0x80];
-    const dark: img.RGBA = [0x00, 0x00, 0x00, 0x80];
-    const imageData = img.fromImageData(img.generate(size, size, (x, y) => ((x - x % step) / step & 1) === ((y - y % step) / step & 1) ? lite : dark));
-    const image = new svg.Node('image', { id: 'image', x: -size / 2, y: -size / 2, width: size, height: size, 'xlink:href': imageData });
-
-    const scene = new svg.Node('g', { id: 'scene' });
-    scene.items.push(image, ...groups);
-
-    model.items.push(defs, scene);
-    return model;
   }
 }

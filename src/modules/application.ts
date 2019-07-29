@@ -3,8 +3,6 @@ import { observable, reaction } from 'mobx';
 
 import App from '@/components/app.vue';
 
-import * as svg from '@/lib/svg';
-
 import { List } from '@/modules/list';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
@@ -63,7 +61,7 @@ export class Application {
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
 
-  public readonly svgScene = new SvgScene();
+  public readonly svgScene = new SvgScene(this.view2d);
 
   private vue!: Vue;
 
@@ -76,30 +74,6 @@ export class Application {
   }
 
   private setupReactions() {
-    // TODO: move this code somewhere.
-    // Bind view-2d's selected image to svg scene.
-    let scene: svg.Node = undefined!;
-    for (const item of this.svgScene.model.items) {
-      if (item.attributes.id === 'scene') {
-        scene = item;
-      }
-    }
-    if (scene) {
-      let image: svg.Node = undefined!;
-      for (const item of scene.items) {
-        if (item.attributes.id === 'image') {
-          image = item;
-        }
-      }
-      if (image) {
-        reaction(
-          () => this.view2d.selectedItem,
-          () => image.attributes['xlink:href'] = this.view2d.selectedItem!,
-          { fireImmediately: true },
-        );
-      }
-    }
-
     reaction(
       () => [this.layouts.selectedIndex, this.tools.show],
       () => Vue.nextTick(() => window.dispatchEvent(new Event('resize'))),

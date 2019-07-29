@@ -32,12 +32,3 @@ export function fromElement(el: Element) {
   }
   return node;
 }
-
-// parse testcase:
-
-// import sample from '!!raw-loader!@/assets/fullscreen.svg';
-// function testParse() {
-//   const node = svg.parse(sample);
-//   console.log('sample:', sample);
-//   console.log('node:', node);
-// }

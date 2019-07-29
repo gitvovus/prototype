@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-250 -250 500 500" width="500" height="500" fill="white">
+  <defs>
+    <g id="cam-pic">
+      <path d="M-40 -40v30 h10v-20h20v-10zM40 -40h-30v10h20v20h10zM-40 40h30v-10h-20v-20h-10zM40 40v-30 h-10v20h-20v10z"/>
+      <circle cx="0" cy="0" r="20" fill="red"/>
+    </g>
+  </defs>
+  <g id="scene">
+    <image id="image" x="-200" y="-200" width="400" height="400"/>
+    <g transform="translate(-200 -200)">
+      <use xlink:href="#cam-pic"/>
+    </g>
+    <g transform="translate(200 -200)">
+      <use xlink:href="#cam-pic"/>
+    </g>
+    <g transform="translate(-200 200)">
+      <use xlink:href="#cam-pic"/>
+    </g>
+    <g transform="translate(200 200)">
+      <use xlink:href="#cam-pic"/>
+    </g>
+  </g>
+</svg>
