@@ -126,3 +126,13 @@ button:active {
 select {
   border: none;
 }
+
+.thing {
+  fill: orange;
+  stroke: white;
+  filter: url(#shadow);
+}
+.thing:hover {
+  fill: red;
+  filter: url(#highlight);
+}

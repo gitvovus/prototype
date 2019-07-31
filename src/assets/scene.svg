@@ -1,35 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-250 -250 500 500" width="500" height="500" fill="white">
-  <defs>
-    <g id="cam-pic">
-      <path d="M-40 -40v30 h10v-20h20v-10zM40 -40h-30v10h20v20h10zM-40 40h30v-10h-20v-20h-10zM40 40v-30 h-10v20h-20v10z"/>
-      <circle cx="0" cy="0" r="20" fill="red"/>
-    </g>
-    <filter id="grayscale">
-      <feColorMatrix
-        type="matrix"
-        in="SourceGraphic"
-        values="
-          0.2126 0.7152 0.0722 0 0
-          0.2126 0.7152 0.0722 0 0
-          0.2126 0.7152 0.0722 0 0
-          0      0      0      1 0
-        "
-      />
-    </filter>
-  </defs>
-  <g id="scene">
-    <image id="image" x="-200" y="-200" width="400" height="400" filter="url(#grayscale)"/>
-    <g transform="translate(-200 -200)">
-      <use xlink:href="#cam-pic"/>
-    </g>
-    <g transform="translate(200 -200)">
-      <use xlink:href="#cam-pic"/>
-    </g>
-    <g transform="translate(-200 200)">
-      <use xlink:href="#cam-pic"/>
-    </g>
-    <g transform="translate(200 200)">
-      <use xlink:href="#cam-pic"/>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-250 -250 500 500" width="500" height="500">
+<defs>
+  <filter id="grayscale">
+    <feColorMatrix
+      type="matrix"
+      in="SourceGraphic"
+      values="
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0.2126 0.7152 0.0722 0 0
+        0      0      0      1 0
+      "
+    />
+  </filter>
+  <filter id="shadow">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+    <feMerge>
+      <feMergeNode/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="highlight">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="shadow"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+    <feFlood flood-color="white" result="color"/>
+    <feComposite in="color" operator="in" in2="blur"/>
+    <feMerge>
+      <feMergeNode/>
+      <feMergeNode in="shadow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <g id="push">
+    <circle r="40" fill="none" stroke="none"/>
+    <circle r="20"/>
   </g>
+  <g id="arrow">
+    <rect x="-20" y="-50" width="70" height="100" fill="none" stroke="none"/>
+    <path d="M30 0l-20-20v10h-10v20h10v10z"/>
+  </g>
+</defs>
+<g id="scene">
+  <image id="image" x="-200" y="-200" width="400" height="400" filter="url(#grayscale)"/>
+  <g id="controls" transform="translate(-250 100)">
+    <use id="center" class="thing" href="#push"/>
+    <use id="right" class="thing" href="#arrow" transform="rotate(0) translate(30)"/>
+    <use id="bottom" class="thing" href="#arrow" transform="rotate(90) translate(30)"/>
+    <use id="left" class="thing" href="#arrow" transform="rotate(180) translate(30)"/>
+    <use id="top" class="thing" href="#arrow" transform="rotate(270) translate(30)"/>
+  </g>
+</g>
 </svg>

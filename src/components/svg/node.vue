@@ -15,5 +15,13 @@ import { Node } from '@/lib/svg';
 @Component
 export default class SvgItem extends Vue {
   @Prop() private model!: Node;
+
+  private mounted() {
+    this.model.mount(this.$el as SVGElement);
+  }
+
+  private beforeDestroy() {
+    this.model.unmount();
+  }
 }
 </script>

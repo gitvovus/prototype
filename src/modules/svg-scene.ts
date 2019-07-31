@@ -2,47 +2,32 @@ import { observable, reaction } from 'mobx';
 import * as svg from '@/lib/svg';
 import { View2d } from '@/modules/view-2d';
 import { Controller } from '@/modules/svg-controller';
-import svgContent from '!!raw-loader!@/assets/scene.svg';
+import data from '!!raw-loader!@/assets/scene.svg';
 
 export class SvgScene {
-  @observable public model: svg.Node;
+  @observable public root: svg.Node;
 
   private view2d: View2d;
-  private controller!: Controller;
+  private controller: Controller;
 
   public constructor(view2d: View2d) {
-    this.model = svg.parse(svgContent);
+    this.root = svg.parse(data);
     this.view2d = view2d;
-    this.controller = new Controller(this.model);
+    this.controller = new Controller(this.root);
 
-    let scene: svg.Node = undefined!;
-    for (const item of this.model.items) {
-      if (item.attributes.id === 'scene') {
-        scene = item;
-      }
-    }
-    if (scene) {
-      let image: svg.Node = undefined!;
-      for (const item of scene.items) {
-        if (item.attributes.id === 'image') {
-          image = item;
-        }
-      }
-      if (image) {
-        reaction(
-          () => this.view2d.selectedItem,
-          () => image.attributes.href = this.view2d.selectedItem!,
-          { fireImmediately: true },
-        );
-      }
-    }
+    const image = this.root.find('image')!;
+    reaction(
+      () => this.view2d.selectedItem,
+      () => image.attributes.href = this.view2d.selectedItem!,
+      { fireImmediately: true },
+    );
   }
 
-  public activate(el: HTMLElement) {
+  public mount(el: HTMLElement) {
     this.controller.activate(el);
   }
 
-  public deactivate() {
+  public unmount() {
     if (this.controller) {
       this.controller.dispose();
     }

@@ -9,8 +9,7 @@
   </div>
   <div class="lorem-content">
     <div class="svg-container" tabindex="0">
-      <!-- <svg-item :model="model.model"/> -->
-      <svg-node :model="model.model"/>
+      <svg-node :model="model.root"/>
     </div>
   </div>
 </div>
@@ -29,11 +28,11 @@ export default class ViewSvg extends Vue {
   @Prop() private model!: Model;
 
   private mounted() {
-    this.model.activate(this.$el.getElementsByClassName('svg-container')[0] as HTMLElement);
+    this.model.mount(this.$el.getElementsByClassName('svg-container')[0] as HTMLElement);
   }
 
   private beforeDestroy() {
-    this.model.deactivate();
+    this.model.unmount();
   }
 }
 </script>
@@ -46,8 +45,5 @@ export default class ViewSvg extends Vue {
   overflow: hidden;
   outline: none;
   background-color: rgba(0, 0, 0, 0.5);
-}
-.svg {
-  position: absolute;
 }
 </style>
