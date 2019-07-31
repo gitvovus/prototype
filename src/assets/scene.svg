@@ -4,9 +4,21 @@
       <path d="M-40 -40v30 h10v-20h20v-10zM40 -40h-30v10h20v20h10zM-40 40h30v-10h-20v-20h-10zM40 40v-30 h-10v20h-20v10z"/>
       <circle cx="0" cy="0" r="20" fill="red"/>
     </g>
+    <filter id="grayscale">
+      <feColorMatrix
+        type="matrix"
+        in="SourceGraphic"
+        values="
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0.2126 0.7152 0.0722 0 0
+          0      0      0      1 0
+        "
+      />
+    </filter>
   </defs>
   <g id="scene">
-    <image id="image" x="-200" y="-200" width="400" height="400"/>
+    <image id="image" x="-200" y="-200" width="400" height="400" filter="url(#grayscale)"/>
     <g transform="translate(-200 -200)">
       <use xlink:href="#cam-pic"/>
     </g>
