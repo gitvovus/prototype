@@ -57,7 +57,7 @@ export class Application {
   public readonly view2d = new View2d();
   public readonly tools = new Tools('tools', 'icon-tools', 'Tools', false);
   public readonly lorem = new Tools('lorem', 'icon-tools', 'Lorem', false);
-  public readonly svg = new Tools('svg', 'icon-tools', 'SVG', false);
+  public readonly svg = new Tools('svg', 'icon-tools', 'SVG', true);
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
 

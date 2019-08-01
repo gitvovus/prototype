@@ -12,14 +12,14 @@
       "
     />
   </filter>
-  <filter id="shadow">
+  <filter id="shadow" x="-1" y="-1" width="3" height="3">
     <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
     <feMerge>
       <feMergeNode/>
       <feMergeNode in="SourceGraphic"/>
     </feMerge>
   </filter>
-  <filter id="highlight">
+  <filter id="highlight" x="-1" y="-1" width="3" height="3">
     <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="shadow"/>
     <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
     <feFlood flood-color="white" result="color"/>
@@ -30,14 +30,8 @@
       <feMergeNode in="SourceGraphic"/>
     </feMerge>
   </filter>
-  <g id="push">
-    <circle r="40" fill="none" stroke="none"/>
-    <circle r="20"/>
-  </g>
-  <g id="arrow">
-    <rect x="-20" y="-50" width="70" height="100" fill="none" stroke="none"/>
-    <path d="M30 0l-20-20v10h-10v20h10v10z"/>
-  </g>
+  <circle id="push" r="20"/>
+  <path id="arrow" d="M30 0l-20-20v10h-10v20h10v10z"/>
 </defs>
 <g id="scene">
   <image id="image" x="-200" y="-200" width="400" height="400" filter="url(#grayscale)"/>

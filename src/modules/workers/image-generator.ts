@@ -14,9 +14,9 @@ async function flower(radius: number, petals: number, t: number) {
     const r = Math.hypot(x, y);
     const phi = Math.atan2(y, x);
 
-    const a = petals * phi / Math.PI;
-    const b = petals * phi / Math.PI + 1;
-    const c = petals * phi / Math.PI + 1;
+    const a = petals * phi / Math.PI + 0.2;
+    const b = petals * phi / Math.PI + 1.2;
+    const c = petals * phi / Math.PI + 1.2;
     const f = [
       (saw(a) ** 0.3 + 0.5) * radius * 0.65,
       (saw(b) ** (0.2 + 0.5 * t) + 0.5) * radius * (4 + t) * 0.13,
