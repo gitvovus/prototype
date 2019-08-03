@@ -14,6 +14,9 @@
     <div class="anchor h-center bottom">
       <div class="toolbar">
         <div class="filter-wrapper">
+          <slider :min="0" :max="100" v-model="model.grayscale"/>
+        </div>
+        <div class="filter-wrapper">
           <slider :min="0" :max="100" v-model="model.brightness"/>
         </div>
         <div class="filter-wrapper">
@@ -59,6 +62,6 @@ export default class SvgView extends Vue {
 .filter-wrapper {
   display: inline-block;
   width: 100px;
-  margin: 10px;
+  margin: 8px 8px 5px 8px;
 }
 </style>

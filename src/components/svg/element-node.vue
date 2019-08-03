@@ -1,6 +1,6 @@
 <template>
   <v-component v-if="model.tag !== '#text'" :is="model.tag" v-bind="model.attributes">
-    <element-node v-for="(item, index) in model.items" :key="index" :model="model.items[index]"/>
+    <element-node v-for="(item, index) in model.items" :key="index + (item.attributes.id || '')" :model="model.items[index]"/>
   </v-component>
   <text-node v-else :model="model"/>
 </template>
