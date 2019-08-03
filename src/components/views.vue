@@ -53,8 +53,8 @@
         <v-component v-if="view3d.demo && view3d.demo.model" :is="view3d.demo.model.template" :model="view3d.demo.model"/>
       </div>
     </tools>
-    <div class="toolbar">
-      <div class="icons">
+    <div class="anchor h-center bottom">
+      <div class="toolbar">
         <icon img="icon-home" for="page-home"/>
         <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
         <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
@@ -63,11 +63,11 @@
     </div>
   </div>
   <floating v-show="lorem.show">
-    <div class="lorem">
-      <div class="lorem-header">
-        <div class="lorem-title">Lorem</div>
+    <div class="window">
+      <div class="window-header">
+        <div class="window-title">Lorem</div>
       </div>
-      <div class="lorem-content">
+      <div class="window-content">
         <div class="article">
           <div class="column" style="background-color: #ffffe0">
             <lorem/>
@@ -164,54 +164,17 @@ export default class Views extends Vue {
 <style lang="scss">
 @import '@/styles/main.scss';
 @import '@/styles/icons.scss';
-
-.lorem {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  pointer-events: none;
-}
-.lorem-header {
-  color: white;
-  font-size: $font-size-menu;
-  text-shadow: $shadow-text;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: $bg-menu;
-  flex: 0 0 auto;
-}
-.lorem-title {
-  padding: $padding-menu;
-}
-.lorem-content {
-  flex: 1 1 auto;
-  overflow: auto;
-  pointer-events: auto;
-}
 .article {
   display: flex;
   flex: 1 0 auto;
   flex-direction: row;
-  overflow: auto;
-  pointer-events: auto;
 }
 .column {
-  flex: 1 1 0;
+  flex: 1 1 auto;
   padding: 5px;
 }
 .app-menu {
   display: none;
-}
-.section {
-  padding: $padding-menu;
-  color: white;
-  text-shadow: $shadow-text;
-  background-color: $bg-menu-hover;
-}
-.slider-container {
-  margin: 10px;
 }
 .v2-scroller {
   position: absolute;

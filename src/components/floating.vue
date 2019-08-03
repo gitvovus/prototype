@@ -35,11 +35,7 @@ export default class Floating extends Vue {
     this.disposers = [
       reaction(
         () => [this.controller.width, this.controller.height],
-        () => {
-          this.$emit('resize');
-          // this.$el.dispatchEvent(new Event('resize'));
-          // console.log('resize', this.controller.width, this.controller.height);
-        },
+        () => this.$emit('resize'),
         { fireImmediately: true },
       ),
     ];

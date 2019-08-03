@@ -1,5 +1,6 @@
 <template>
 <v-component :is="model.tag" v-bind="model.attributes">
+  <template v-if="model.content">{{model.content}}</template>
   <template v-if="model.items">
     <svg-node v-for="(item, index) in model.items" :key="index" :model="model.items[index]"/>
   </template>

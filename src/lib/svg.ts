@@ -11,7 +11,12 @@ export function fromElement(el: Element) {
   for (const attr of el.attributes) {
     attributes[attr.name] = attr.value;
   }
-  const node = new Node(el.tagName, attributes);
+  const node = new Node(el.nodeName, attributes);
+  // TODO: improve.
+  // Note: <text> node can contain both text and child nodes.
+  if ((el.nodeName === 'text' || el.nodeName === 'style') && el.firstChild && el.firstChild.nodeValue) {
+    node.content = el.firstChild.nodeValue;
+  }
   for (const child of el.children) {
     node.items.push(fromElement(child));
   }
@@ -25,6 +30,7 @@ export interface Attributes {
 export class Node {
   public readonly tag: string;
   @observable public readonly attributes: Attributes = {};
+  @observable public content?: string;
   @observable.shallow public readonly items: Node[] = [];
 
   private el?: SVGElement;

@@ -67,3 +67,6 @@ https://github.com/mrdoob/three.js/issues/11345
 https://github.com/mrdoob/three.js/pull/15719
 https://threejs.org/examples/?q=memory
 
+SVG filters:
+https://www.w3.org/TR/filter-effects-1
+https://www.w3.org/Graphics/SVG/IG/resources/svgprimer.html#filters

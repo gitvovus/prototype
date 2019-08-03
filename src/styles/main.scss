@@ -57,6 +57,9 @@ html, body, .app, .home, .views {
   padding: 4px 4px 3px;
   z-index: $z-tip;
 }
+.anchor {
+  position: absolute;
+}
 .left {
   left: 0;
 }
@@ -68,6 +71,12 @@ html, body, .app, .home, .views {
 }
 .bottom {
   bottom: 0;
+}
+.h-center {
+  left: 50%;
+}
+.v-center {
+  top: 50%;
 }
 .menu {
   display: flex;
@@ -111,28 +120,49 @@ button:active {
   box-shadow: none;
 }
 .toolbar {
-  position: absolute;
-  width: 100%;
+  position: relative;
+  left: -50%;
   bottom: 0;
-  text-align: center;
-  pointer-events: none;
-}
-.icons {
-  display: inline-block;
   border-radius: 5px 5px 0 0;
   background-color: rgba(0, 0, 0, 0.25);
-  pointer-events: auto;
 }
 select {
   border: none;
 }
 
-.thing {
-  fill: orange;
-  stroke: white;
-  filter: url(#shadow);
+.section {
+  padding: $padding-menu;
+  color: white;
+  text-shadow: $shadow-text;
+  background-color: $bg-menu-hover;
 }
-.thing:hover {
-  fill: red;
-  filter: url(#highlight);
+.slider-container {
+  margin: 10px;
+}
+
+.window {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.window-header {
+  color: white;
+  font-size: $font-size-menu;
+  text-shadow: $shadow-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $bg-menu;
+  flex: 0 0 auto;
+}
+.window-title {
+  padding: $padding-menu;
+}
+.window-content {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: auto;
+  pointer-events: auto;
 }

@@ -1,6 +1,7 @@
 import { action, computed, observable, reaction } from 'mobx';
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
+import * as utils from '@/lib/utils';
 
 type Vector = [number, number];
 type Matrix = [number, number, number, number, number, number];
@@ -54,21 +55,19 @@ export class Controller {
   @observable public offsetY = 0;
   @observable public scale = 1;
 
-  private model!: svg.Node;
+  private el!: HTMLElement;
+  private root!: svg.Node;
   private scene!: svg.Node;
-  private root!: HTMLElement;
+  private resetButton!: svg.Node;
 
   private picked = { x: 0, y: 0 };
   private dragging = false;
   private disposers: Array<() => void> = [];
 
   public constructor(model: svg.Node) {
-    this.model = model;
-    for (const item of model.items) {
-      if (item.attributes.id === 'scene') {
-        this.scene = item;
-      }
-    }
+    this.root = model;
+    this.scene = model.find('scene')!;
+    this.resetButton = model.find('center')!;
   }
 
   @computed public get transform() {
@@ -83,13 +82,14 @@ export class Controller {
     return translate(this.width / 2, this.height / 2);
   }
 
-  public activate(root: HTMLElement) {
-    this.root = root;
-    this.root.addEventListener('pointerdown', this.pick);
-    this.root.addEventListener('pointermove', this.drag);
-    this.root.addEventListener('pointerup', this.drop);
-    this.root.addEventListener('wheel', this.wheel);
-    this.root.addEventListener('keydown', this.keyDown);
+  public mount(el: HTMLElement) {
+    this.el = el;
+    this.el.addEventListener('pointerdown', this.pick);
+    this.el.addEventListener('pointermove', this.drag);
+    this.el.addEventListener('pointerup', this.drop);
+    this.el.addEventListener('wheel', this.wheel);
+    this.resetButton.element!.addEventListener('pointerdown', this.stop);
+    this.resetButton.element!.addEventListener('click', this.reset);
     this.disposers = [
       reaction(
         () => [this.viewBox, this.transform],
@@ -99,80 +99,77 @@ export class Controller {
     ];
   }
 
-  public dispose() {
+  public unmount() {
     this.disposers.forEach(disposer => disposer());
     this.disposers = [];
-    this.root.removeEventListener('pointerdown', this.pick);
-    this.root.removeEventListener('pointermove', this.drag);
-    this.root.removeEventListener('pointerup', this.drop);
-    this.root.removeEventListener('wheel', this.wheel);
-    this.root.removeEventListener('keydown', this.keyDown);
+    this.resetButton.element!.removeEventListener('pointerdown', this.stop);
+    this.resetButton.element!.removeEventListener('click', this.reset);
+    this.el.removeEventListener('pointerdown', this.pick);
+    this.el.removeEventListener('pointermove', this.drag);
+    this.el.removeEventListener('pointerup', this.drop);
+    this.el.removeEventListener('wheel', this.wheel);
   }
 
-  @action public resize() {
-    this.width = this.root.clientWidth;
-    this.height = this.root.clientHeight;
-  }
-
-  private update() {
-    this.model.attributes.viewBox = this.viewBox;
-    this.model.attributes.width = this.width;
-    this.model.attributes.height = this.height;
-    this.scene.attributes.transform = toAttribute(mulMM(this.transform, this.viewTransform));
-  }
-
-  @action private reset() {
+  @action public reset = () => {
     this.scale = 1;
     this.offsetX = 0;
     this.offsetY = 0;
   }
 
-  @action private zoom(x: number, y: number, k: number) {
+  @action public resize() {
+    this.width = this.el.clientWidth;
+    this.height = this.el.clientHeight;
+  }
+
+  @action public zoom(x: number, y: number, k: number) {
     const dx = (x - this.offsetX) / this.scale;
     const dy = (y - this.offsetY) / this.scale;
     this.scale = std.clamp(this.scale * k, 0.25, 4);
     this.move(x - dx * this.scale, y - dy * this.scale);
   }
 
-  @action private move(x: number, y: number) {
+  @action public move(x: number, y: number) {
     this.offsetX = x;
     this.offsetY = y;
   }
 
+  private update() {
+    this.root.attributes.viewBox = this.viewBox;
+    this.root.attributes.width = this.width;
+    this.root.attributes.height = this.height;
+    this.scene.attributes.transform = toAttribute(mulMM(this.transform, this.viewTransform));
+  }
+
+  private stop = (e: Event) => e.stopPropagation();
+
   private pick = (e: PointerEvent) => {
     if (e.buttons & 1) {
-      e.preventDefault();
-      this.root.focus();
-      this.picked.x = e.offsetX - this.offsetX;
-      this.picked.y = e.offsetY - this.offsetY;
+      e.stopPropagation();
+      const [offsetX, offsetY] = utils.currentTargetOffset(e);
+      this.picked.x = offsetX - this.offsetX;
+      this.picked.y = offsetY - this.offsetY;
       this.dragging = true;
-      this.root.setPointerCapture(e.pointerId);
+      this.el.setPointerCapture(e.pointerId);
     }
   }
 
   private drag = (e: PointerEvent) => {
     if (this.dragging) {
-      this.move(e.offsetX - this.picked.x, e.offsetY - this.picked.y);
+      const [offsetX, offsetY] = utils.currentTargetOffset(e);
+      this.move(offsetX - this.picked.x, offsetY - this.picked.y);
     }
   }
 
   private drop = (e: PointerEvent) => {
     if (!(e.buttons & 1)) {
       this.dragging = false;
-      this.root.releasePointerCapture(e.pointerId);
+      this.el.releasePointerCapture(e.pointerId);
     }
   }
 
   private wheel = (e: WheelEvent) => {
     const k = Math.sign(e.deltaY) < 0 ? 1.1 : 1 / 1.1;
-    this.zoom(e.offsetX, e.offsetY, k);
-  }
-
-  private keyDown = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case 'Space':
-        this.reset();
-        break;
-    }
+    const [offsetX, offsetY] = utils.currentTargetOffset(e);
+    this.zoom(offsetX, offsetY, k);
   }
 }
