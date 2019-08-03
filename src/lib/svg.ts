@@ -6,45 +6,59 @@ export function parse(text: string) {
   return fromElement(document.documentElement);
 }
 
-export function fromElement(el: Element) {
-  const attributes: Attributes = {};
-  for (const attr of el.attributes) {
-    attributes[attr.name] = attr.value;
+export function fromElement(node: Node) {
+  if (node.nodeType === node.TEXT_NODE) {
+
+    const text = (node.nodeValue || '').trim();
+    return text.length > 0 ? new Item(node.nodeName, text) : undefined;
+
+  } else if (node instanceof Element) {
+
+    const attributes: Attributes = {};
+    for (const attr of node.attributes) {
+      attributes[attr.name] = attr.value;
+    }
+    const item = new Item(node.nodeName, attributes);
+    for (const child of node.childNodes) {
+      const childItem = fromElement(child);
+      if (childItem) {
+        item.items.push(childItem);
+      }
+    }
+    return item;
   }
-  const node = new Node(el.nodeName, attributes);
-  // TODO: improve.
-  // Note: <text> node can contain both text and child nodes.
-  if ((el.nodeName === 'text' || el.nodeName === 'style') && el.firstChild && el.firstChild.nodeValue) {
-    node.content = el.firstChild.nodeValue;
-  }
-  for (const child of el.children) {
-    node.items.push(fromElement(child));
-  }
-  return node;
+
+  return undefined;
 }
 
 export interface Attributes {
   [key: string]: string | number;
 }
 
-export class Node {
+export class Item {
   public readonly tag: string;
   @observable public readonly attributes: Attributes = {};
-  @observable public content?: string;
-  @observable.shallow public readonly items: Node[] = [];
+  @observable public text?: string;
+  @observable.shallow public readonly items: Item[] = [];
 
   private el?: SVGElement;
 
-  public constructor(tag: string, attributes?: Attributes) {
+  public constructor(tag: string, data?: Attributes | string) {
     this.tag = tag;
-    Object.assign(this.attributes, attributes);
+    if (data) {
+      if (typeof data === 'string') {
+        this.text = data;
+      } else {
+        Object.assign(this.attributes, data);
+      }
+    }
   }
 
   public get element() {
     return this.el;
   }
 
-  public find(id: string): Node | undefined {
+  public find(id: string): Item | undefined {
     if (this.attributes.id === id) {
       return this;
     }

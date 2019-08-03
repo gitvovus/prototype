@@ -7,18 +7,18 @@ import { Controller } from '@/modules/svg-controller';
 import data from '!!raw-loader!@/assets/scene.svg';
 
 export class SvgScene {
-  @observable public root: svg.Node;
+  @observable public root: svg.Item;
 
   private view2d: View2d;
   private controller: Controller;
 
-  private brightnessFilter: svg.Node;
-  private contrastFilter: svg.Node;
+  private brightnessFilter: svg.Item;
+  private contrastFilter: svg.Item;
   @observable private brightnessValue = 100;
   @observable private contrastValue = 100;
 
   public constructor(view2d: View2d) {
-    this.root = svg.parse(data);
+    this.root = svg.parse(data)!;
     this.view2d = view2d;
     this.controller = new Controller(this.root);
 

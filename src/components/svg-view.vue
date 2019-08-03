@@ -9,7 +9,7 @@
   </div>
   <div class="window-content">
     <div class="svg-container" tabindex="0">
-      <svg-node :model="model.root"/>
+      <element-node :model="model.root"/>
     </div>
     <div class="anchor h-center bottom">
       <div class="toolbar">
@@ -34,7 +34,7 @@ import { SvgScene } from '@/modules/svg-scene';
 
 @Observer
 @Component
-export default class ViewSvg extends Vue {
+export default class SvgView extends Vue {
   @Prop() private model!: SvgScene;
 
   private mounted() {

@@ -80,7 +80,7 @@
     </div>
   </floating>
   <floating v-show="svg.show" @resize="model.svgScene.resize()">
-    <view-svg :model="model.svgScene"/>
+    <svg-view :model="model.svgScene"/>
   </floating>
   <modal :model="modal">
     <div class="article">

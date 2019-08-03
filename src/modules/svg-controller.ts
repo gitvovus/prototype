@@ -56,15 +56,15 @@ export class Controller {
   @observable public scale = 1;
 
   private el!: HTMLElement;
-  private root!: svg.Node;
-  private scene!: svg.Node;
-  private resetButton!: svg.Node;
+  private root!: svg.Item;
+  private scene!: svg.Item;
+  private resetButton!: svg.Item;
 
   private picked = { x: 0, y: 0 };
   private dragging = false;
   private disposers: Array<() => void> = [];
 
-  public constructor(model: svg.Node) {
+  public constructor(model: svg.Item) {
     this.root = model;
     this.scene = model.find('scene')!;
     this.resetButton = model.find('center')!;
