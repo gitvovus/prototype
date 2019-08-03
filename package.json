@@ -10,12 +10,12 @@
   "dependencies": {
     "mobx": "^5.13.0",
     "mobx-vue": "^2.0.9",
-    "three": "^0.106.2",
+    "three": "^0.107.0",
     "vue": "^2.6.10",
     "vue-property-decorator": "^8.2.1"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.9.0",
+    "@fortawesome/fontawesome-free": "^5.10.1",
     "@vue/cli-plugin-typescript": "^3.9.0",
     "@vue/cli-service": "^3.9.3",
     "node-sass": "^4.12.0",
