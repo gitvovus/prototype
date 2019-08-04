@@ -40,6 +40,14 @@
           <scroller :min="0" :max="view2d.items.length - 1" v-model="view2d.selectedIndex"/>
         </div>
       </view-2d>
+      <div class="anchor h-center bottom">
+        <div class="toolbar-bottom">
+          <icon img="icon-home" for="page-home"/>
+          <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
+          <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
+          <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
+        </div>
+      </div>
     </div>
     <tools v-show="tools.show">
       <div v-if="layouts.selectedItem.show2d">
@@ -53,14 +61,6 @@
         <v-component v-if="view3d.demo && view3d.demo.model" :is="view3d.demo.model.template" :model="view3d.demo.model"/>
       </div>
     </tools>
-    <div class="anchor h-center bottom">
-      <div class="toolbar">
-        <icon img="icon-home" for="page-home"/>
-        <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
-        <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
-        <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
-      </div>
-    </div>
   </div>
   <floating v-show="lorem.show">
     <div class="window">

@@ -1,6 +1,6 @@
 import { observable } from 'mobx';
 
-export function parse(text: string) {
+export function fromSource(text: string) {
   const parser = new DOMParser();
   const document = parser.parseFromString(text, 'image/svg+xml');
   return fromElement(document.documentElement);
@@ -36,6 +36,7 @@ export interface Attributes {
 }
 
 export class Item {
+  public readonly symbol = Symbol();
   public readonly tag: string;
   @observable public readonly attributes: Attributes = {};
   @observable public text?: string;

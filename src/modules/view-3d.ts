@@ -18,23 +18,23 @@ export class View3d extends List<string> {
     return this.scene ? this.scene.demo : undefined;
   }
 
-  public activate(canvas: HTMLCanvasElement) {
+  public mount(canvas: HTMLCanvasElement) {
     this.scene = new Scene(canvas);
     this.disposers = [
       reaction(
         () => this.selectedItem,
-        () => { if (this.scene) { this.scene.load(this.selectedItem!); } },
+        () => this.scene!.load(this.selectedItem!),
         { fireImmediately: true },
       ),
       reaction(
         () => this.cameraType,
-        () => { if (this.scene) { this.scene.setCamera(this.cameraType); } },
+        () => this.scene!.setCameraType(this.cameraType),
         { fireImmediately: true },
       ),
     ];
   }
 
-  public deactivate() {
+  public unmount() {
     this.disposers.forEach(disposer => disposer());
     this.disposers = [];
     if (this.scene) {

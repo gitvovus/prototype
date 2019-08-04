@@ -12,7 +12,7 @@
       <element-node :model="model.root"/>
     </div>
     <div class="anchor h-center bottom">
-      <div class="toolbar">
+      <div class="toolbar-bottom">
         <div class="filter-wrapper">
           <slider :min="0" :max="100" v-model="model.grayscale"/>
         </div>

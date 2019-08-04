@@ -1,11 +1,10 @@
 import { computed, observable, reaction } from 'mobx';
-import Vue from 'vue';
 
 import * as svg from '@/lib/svg';
 import { View2d } from '@/modules/view-2d';
 import { Controller } from '@/modules/svg-controller';
 
-import data from '!!raw-loader!@/assets/scene.svg';
+import source from '!!raw-loader!@/assets/scene.svg';
 
 export class SvgScene {
   @observable public root: svg.Item;
@@ -24,7 +23,7 @@ export class SvgScene {
   private stamps: svg.Item[] = [];
 
   public constructor(view2d: View2d) {
-    this.root = svg.parse(data)!;
+    this.root = svg.fromSource(source)!;
     this.view2d = view2d;
     this.controller = new Controller(this.root);
 
@@ -83,23 +82,20 @@ export class SvgScene {
 
   public mount(el: HTMLElement) {
     this.controller.mount(el);
-    this.setup();
+    this.stamps.forEach(item => {
+      item.on('pointerdown', (e: Event) => e.stopPropagation());
+      item.on('click', (e: Event) => item.index = 2);
+    });
   }
 
   public unmount() {
     if (this.controller) {
       this.controller.unmount();
     }
+    this.stamps.forEach(item => item.off());
   }
 
   public resize() {
     this.controller.resize();
-  }
-
-  private setup() {
-    this.stamps.forEach(item => {
-      item.on('pointerdown', (e: Event) => e.stopPropagation());
-      item.on('click', (e: Event) => item.index = 2);
-    });
   }
 }

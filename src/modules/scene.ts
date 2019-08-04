@@ -27,7 +27,7 @@ export class Scene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AmbientLight(0x404040));
-    this.setCamera(0);
+    this.setCameraType(0);
     this.demo = new Demo(this.scene, this.camera, canvas);
 
     window.addEventListener('resize', this.resize);
@@ -57,7 +57,7 @@ export class Scene {
     }
   }
 
-  public setCamera(type: CameraType) {
+  public setCameraType(type: CameraType) {
     this.scene.remove(this.camera);
 
     const aspect = this.root.clientWidth / this.root.clientHeight;

@@ -17,11 +17,11 @@ export default class View3d extends Vue {
   @Prop() private model!: Model;
 
   private mounted() {
-    this.model.activate(this.$el.getElementsByClassName('v3-viewport')[0] as HTMLCanvasElement);
+    this.model.mount(this.$el.getElementsByClassName('v3-viewport')[0] as HTMLCanvasElement);
   }
 
   private beforeDestroy() {
-    this.model.deactivate();
+    this.model.unmount();
   }
 }
 </script>

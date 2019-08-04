@@ -86,7 +86,7 @@
     </feMerge>
   </filter>
   <circle id="push" r="20"/>
-  <path id="arrow" d="M30 0l-20-20v10h-10v20h10v10z" transform="translate(30)"/>
+  <path id="arrow" d="M0 -15l20 20h-10v10h-20v-10h-10z"/>
   <path id="stamp" transform="translate(-30 -36)"
     d="
       M0 4a4 4 0 0 0 4 -4
@@ -100,32 +100,32 @@
   <image id="image" filter="url(#image-filter)" pointer-events="none"/>
   <g id="controls" transform="translate(-250 -150)">
     <use id="center" class="thing" tabindex="0" href="#push"/>
-    <use id="top"    class="thing" tabindex="0" href="#arrow" transform="rotate(270)"/>
-    <use id="right"  class="thing" tabindex="0" href="#arrow" transform="rotate(0)"/>
-    <use id="bottom" class="thing" tabindex="0" href="#arrow" transform="rotate(90)"/>
-    <use id="left"   class="thing" tabindex="0" href="#arrow" transform="rotate(180)"/>
-    <text x="0" y="2">&#x00D7;</text>
+    <use id="top"    class="thing" tabindex="0" href="#arrow" transform="rotate(0)   translate(0 -45)"/>
+    <use id="right"  class="thing" tabindex="0" href="#arrow" transform="rotate(90)  translate(0 -45)"/>
+    <use id="bottom" class="thing" tabindex="0" href="#arrow" transform="rotate(180) translate(0 -45)"/>
+    <use id="left"   class="thing" tabindex="0" href="#arrow" transform="rotate(270) translate(0 -45)"/>
+    <text x="0" y="2">&#xd7;</text>
   </g>
   <g id="deck" transform="translate(-250 0)">
-    <g id="#0" transform="translate(24 -24)">
+    <g transform="translate(24 -24)">
       <use class="thing" href="#stamp"/>
-      <text x="0" y="2" font-size="48">#</text>
+      <text x="0" y="2">#</text>
     </g>
-    <g id="#1" transform="translate(0 0)">
+    <g transform="translate(0 0)">
       <use class="thing" href="#stamp"/>
-      <text x="0" y="2" font-size="48">&amp;</text>
+      <text x="0" y="2">&amp;</text>
     </g>
-    <g id="#2" transform="translate(-24 24)">
+    <g transform="translate(-24 24)">
       <use class="thing" href="#stamp"/>
-      <text x="0" y="2" font-size="48">$</text>
+      <text x="0" y="2">$</text>
     </g>
   </g>
   <g transform="translate(-250 150)">
     <use class="thing" disabled="true" tabindex="0" href="#push"/>
-    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(270)"/>
-    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(0)"/>
-    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(90)"/>
-    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(180)"/>
+    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(0)   translate(0 -45)"/>
+    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(90)  translate(0 -45)"/>
+    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(180) translate(0 -45)"/>
+    <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(270) translate(0 -45)"/>
   </g>
 </g>
 </svg>

@@ -3,48 +3,8 @@ import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
 import * as utils from '@/lib/utils';
 
-type Vector = [number, number];
-type Matrix = [number, number, number, number, number, number];
-
-function mulMV(m: Matrix, v: Vector): Vector {
-  return [
-    m[0] * v[0] + m[2] * v[1] + m[4],
-    m[1] * v[0] + m[3] * v[1] + m[5],
-  ];
-}
-
-function mulMM(a: Matrix, b: Matrix): Matrix {
-  return [
-    a[0] * b[0] + a[2] * b[1],
-    a[1] * b[0] + a[3] * b[1],
-    a[0] * b[2] + a[2] * b[3],
-    a[1] * b[2] + a[3] * b[3],
-    a[0] * b[4] + a[2] * b[5] + a[4],
-    a[1] * b[4] + a[3] * b[5] + a[5],
-  ];
-}
-
-function translate(x: number, y: number): Matrix {
-  return [1, 0, 0, 1, x, y];
-}
-
-function scale(s: number): Matrix {
-  return [s, 0, 0, s, 0, 0];
-}
-
-function inverse(m: Matrix): Matrix {
-  const k = 1 / (m[0] * m[3] - m[1] * m[2]);
-  return [
-    m[3] * k,
-    -m[1] * k,
-    -m[2] * k,
-    m[0] * k,
-    (m[2] * m[5] - m[3] * m[4]) * k,
-    (m[1] * m[4] - m[0] * m[5]) * k,
-  ];
-}
-
-function toAttribute(m: Matrix) {
+function toSvgMatrix(matrix: std.Matrix2x3) {
+  const m = matrix.elements;
   return `matrix(${m[0]} ${m[1]} ${m[2]} ${m[3]} ${m[4]} ${m[5]})`;
 }
 
@@ -71,7 +31,7 @@ export class Controller {
   }
 
   @computed public get transform() {
-    return mulMM(translate(this.offsetX, this.offsetY), scale(this.scale));
+    return std.Matrix2x3.translation(this.offsetX, this.offsetY).multiply(std.Matrix2x3.scale(this.scale));
   }
 
   @computed public get viewBox() {
@@ -79,7 +39,7 @@ export class Controller {
   }
 
   @computed public get viewTransform() {
-    return translate(this.width / 2, this.height / 2);
+    return std.Matrix2x3.translation(this.width / 2, this.height / 2);
   }
 
   public mount(el: HTMLElement) {
@@ -88,8 +48,8 @@ export class Controller {
     this.el.addEventListener('pointermove', this.drag);
     this.el.addEventListener('pointerup', this.drop);
     this.el.addEventListener('wheel', this.wheel);
-    this.resetButton.element!.addEventListener('pointerdown', this.stop);
-    this.resetButton.element!.addEventListener('click', this.reset);
+    this.resetButton.on('pointerdown', this.stop);
+    this.resetButton.on('click', this.reset);
     this.disposers = [
       reaction(
         () => [this.viewBox, this.transform],
@@ -102,8 +62,7 @@ export class Controller {
   public unmount() {
     this.disposers.forEach(disposer => disposer());
     this.disposers = [];
-    this.resetButton.element!.removeEventListener('pointerdown', this.stop);
-    this.resetButton.element!.removeEventListener('click', this.reset);
+    this.resetButton.off();
     this.el.removeEventListener('pointerdown', this.pick);
     this.el.removeEventListener('pointermove', this.drag);
     this.el.removeEventListener('pointerup', this.drop);
@@ -137,7 +96,7 @@ export class Controller {
     this.root.attributes.viewBox = this.viewBox;
     this.root.attributes.width = this.width;
     this.root.attributes.height = this.height;
-    this.scene.attributes.transform = toAttribute(mulMM(this.transform, this.viewTransform));
+    this.scene.attributes.transform = toSvgMatrix(this.transform.multiply(this.viewTransform));
   }
 
   private stop = (e: Event) => e.stopPropagation();

@@ -5,7 +5,7 @@ import { List } from '@/modules/list';
 import Worker from 'worker-loader!@/modules/workers/image-generator';
 
 export class View2d extends List<string> {
-  private static readonly imagesCount = 50;
+  private static readonly imagesCount = 5;
   private worker = new Worker();
 
   public constructor() {
