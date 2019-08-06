@@ -1,6 +1,8 @@
 <template>
 <div class="v2" :style="{ backgroundImage: `url(${bg})` }">
-  <img :src="model.selectedItem"/>
+  <div class="svg-container" tabindex="0">
+    <element-node :model="model.root"/>
+  </div>
   <slot/>
 </div>
 </template>
@@ -11,6 +13,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import * as img from '@/lib/images';
 import { View2d as Model } from '@/modules/view-2d';
+import { List } from '@/modules/list';
+import { ImageData } from '@/modules/view-2d';
 
 const step = 10;
 const lite: img.RGBA = [0xc8, 0xd8, 0xe8, 0xff];
@@ -22,6 +26,14 @@ const bg = img.fromImageData(img.generate(step * 2, step * 2, (x, y) => ((x - x 
 export default class View2d extends Vue {
   @Prop() private model!: Model;
   private bg = bg;
+
+  private mounted() {
+    this.model.mount(this.$el.getElementsByClassName('svg-container')[0] as HTMLElement);
+  }
+
+  private beforeDestroy() {
+    this.model.unmount();
+  }
 }
 </script>
 
@@ -34,9 +46,13 @@ export default class View2d extends Vue {
   height: 100%;
   flex: 1 1 0;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+}
+.svg-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -5,7 +5,6 @@
       :key="index+100" :id="item.id" :value="index" v-model="layouts.selectedIndex">
     <input type="checkbox" :id="tools.id" v-model="tools.show">
     <input type="checkbox" :id="lorem.id" v-model="lorem.show">
-    <input type="checkbox" :id="svg.id" v-model="svg.show">
     <input type="checkbox" :id="modal.id" v-model="modal.show">
     <input type="checkbox" :id="fullscreen.id" v-model="fullscreen.show">
   </div>
@@ -17,7 +16,6 @@
       <span class="separator"/>
       <label :for="tools.id" :class="{ active: tools.show }">{{tools.label}}</label>
       <label :for="lorem.id" :class="{ active: lorem.show }">{{lorem.label}}</label>
-      <label :for="svg.id" :class="{ active: svg.show }">{{svg.label}}</label>
       <span class="separator"/>
       <label :for="modal.id" :class="{ active: modal.show }">{{modal.label}}</label>
     </div>
@@ -25,7 +23,7 @@
   <div class="main">
     <div class="layout">
       <view-3d v-show="layouts.selectedItem.show3d" :model="view3d">
-        <div class="tip right">
+        <div class="tip">
           <select v-model="view3d.selectedIndex">
             <option v-for="(item, index) in view3d.items" :key="index" :value="index">{{item}}</option>
           </select>
@@ -36,12 +34,23 @@
         </div>
       </view-3d>
       <view-2d v-show="layouts.selectedItem.show2d" :model="view2d">
+        <div class="filter-panel">
+          <div class="filter-wrapper">
+            <slider :min="0" :max="100" v-model="view2d.grayscale"/>
+          </div>
+          <div class="filter-wrapper">
+            <slider :min="0" :max="100" v-model="view2d.brightness"/>
+          </div>
+          <div class="filter-wrapper">
+            <slider :min="0" :max="100" v-model="view2d.contrast"/>
+          </div>
+        </div>
         <div class="v2-scroller">
-          <scroller :min="0" :max="view2d.items.length - 1" v-model="view2d.selectedIndex"/>
+          <scroller :min="0" :max="view2d.images.items.length - 1" v-model="view2d.images.selectedIndex"/>
         </div>
       </view-2d>
-      <div class="anchor h-center bottom">
-        <div class="toolbar-bottom">
+      <div class="anchor h-center top">
+        <div class="toolbar-top">
           <icon img="icon-home" for="page-home"/>
           <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
           <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
@@ -53,7 +62,7 @@
       <div v-if="layouts.selectedItem.show2d">
         <div class="section">View 2D:</div>
         <div class="slider-container">
-          <slider :min="0" :max="view2d.items.length - 1" v-model="view2d.selectedIndex"/>
+          <slider :min="0" :max="view2d.images.items.length - 1" v-model="view2d.images.selectedIndex"/>
         </div>
       </div>
       <div v-if="layouts.selectedItem.show3d">
@@ -78,9 +87,6 @@
         </div>
       </div>
     </div>
-  </floating>
-  <floating v-show="svg.show" @resize="model.svgScene.resize()">
-    <svg-view :model="model.svgScene"/>
   </floating>
   <modal :model="modal">
     <div class="article">
@@ -126,10 +132,6 @@ export default class Views extends Vue {
 
   private get lorem() {
     return this.model.lorem;
-  }
-
-  private get svg() {
-    return this.model.svg;
   }
 
   private get modal() {
@@ -178,9 +180,21 @@ export default class Views extends Vue {
 }
 .v2-scroller {
   position: absolute;
+  top: 0;
   right: 0;
   height: 100%;
   padding: 12px;
   background-color: rgba(0, 0, 0, 0.2);
+}
+.filter-panel {
+  position: absolute;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0 5px 0 0;
+}
+.filter-wrapper {
+  display: inline-block;
+  width: 100px;
+  padding: 10px;
 }
 </style>

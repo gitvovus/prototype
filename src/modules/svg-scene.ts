@@ -36,8 +36,8 @@ export class SvgScene {
 
     const image = this.root.find('image')!;
     reaction(
-      () => this.view2d.selectedItem,
-      () => Object.assign(image.attributes, { x: '-200', y: '-200', width: '400', height: '400', href: this.view2d.selectedItem!}),
+      () => this.view2d.images.selectedItem!,
+      (item) => Object.assign(image.attributes, { x: -item.width / 2, y: -item.height / 2, width: item.width, height: item.height, href: item.source }),
       { fireImmediately: true },
     );
   }
