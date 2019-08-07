@@ -78,6 +78,18 @@ export class Application {
       () => this.page,
       () => Vue.nextTick(() => Vue.nextTick(() => window.dispatchEvent(new Event('resize')))),
     );
+    reaction(
+      () => this.fullscreen.show,
+      (show: boolean) => {
+        try {
+          if (show) {
+            document.getElementsByClassName('main')[0]!.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        } catch (e) {}
+      },
+    );
   }
 
   private setupEvents() {

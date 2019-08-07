@@ -5,49 +5,53 @@ import * as geometry from '@/lib/geometry';
 export class SelectionGroup {
   public readonly items: THREE.Object3D[] = [];
 
-  private h?: THREE.Object3D;
-  private s?: THREE.Object3D;
+  private hoveredObject?: THREE.Object3D;
+  private selectedObject?: THREE.Object3D;
 
-  private hoc = 0;
-  private soc = 0;
+  private hoveredSavedColor = 0;
+  private selectedSavedColor = 0;
 
-  private readonly hc = 0x00c000;
-  private readonly sc = 0xd01010;
-  private readonly hs = 0xe02020;
+  private readonly hoveredColor = 0x00c000;
+  private readonly selectedColor = 0xd01010;
+  private readonly combinedColor = 0xe02020;
 
   public get hovered() {
-    return this.h;
+    return this.hoveredObject;
   }
 
   public set hovered(value: THREE.Object3D | undefined) {
-    if (this.h === value) { return; }
-
-    if (this.h) {
-      geometry.setColor(this.h, this.h === this.s ? this.sc : this.hoc);
+    if (this.hoveredObject === value) {
+      return;
     }
 
-    this.h = value;
-    if (this.h) {
-      this.hoc = geometry.getColor(this.h);
-      geometry.setColor(this.h, this.h === this.s ? this.hs : this.hc);
+    if (this.hoveredObject) {
+      geometry.setColor(this.hoveredObject, this.hoveredObject === this.selectedObject ? this.selectedColor : this.hoveredSavedColor);
+    }
+
+    this.hoveredObject = value;
+    if (this.hoveredObject) {
+      this.hoveredSavedColor = geometry.getColor(this.hoveredObject);
+      geometry.setColor(this.hoveredObject, this.hoveredObject === this.selectedObject ? this.combinedColor : this.hoveredColor);
     }
   }
 
   public get selected() {
-    return this.s;
+    return this.selectedObject;
   }
 
   public set selected(value: THREE.Object3D | undefined) {
-    if (this.s === value) { return; }
-
-    if (this.s) {
-      geometry.setColor(this.s, this.s === this.h ? this.hc : this.soc);
+    if (this.selectedObject === value) {
+      return;
     }
 
-    this.s = value;
-    if (this.s) {
-      this.soc = this.s === this.h ? this.hoc : geometry.getColor(this.s);
-      geometry.setColor(this.s, this.s === this.h ? this.hs : this.sc);
+    if (this.selectedObject) {
+      geometry.setColor(this.selectedObject, this.selectedObject === this.hoveredObject ? this.hoveredColor : this.selectedSavedColor);
+    }
+
+    this.selectedObject = value;
+    if (this.selectedObject) {
+      this.selectedSavedColor = this.selectedObject === this.hoveredObject ? this.hoveredSavedColor : geometry.getColor(this.selectedObject);
+      geometry.setColor(this.selectedObject, this.selectedObject === this.hoveredObject ? this.combinedColor : this.selectedColor);
     }
   }
 }

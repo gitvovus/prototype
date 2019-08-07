@@ -52,8 +52,8 @@ export class Terrain extends Demo {
   }
 
   public dispose() {
-    geometry.dispose(this.root);
     this.scene.remove(this.root);
+    geometry.dispose(this.root);
     super.dispose();
   }
 }

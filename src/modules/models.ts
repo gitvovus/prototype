@@ -3,14 +3,14 @@ import * as THREE from 'three';
 
 import * as geometry from '@/lib/geometry';
 
-export interface ItemOptions {
-  template: string;
-  label: string;
-  icon: string;
+export interface Attributes {
+  template?: string;
+  label?: string;
+  icon?: string;
 }
 
-export function combine(options: Partial<ItemOptions>, add?: Partial<ItemOptions>) {
-  return Object.assign(options, add);
+export function merge(attributes: Attributes, overwrite?: Attributes) {
+  return Object.assign(attributes, overwrite);
 }
 
 export class Item {
@@ -19,19 +19,16 @@ export class Item {
   @observable public icon!: string;
   @observable.shallow public readonly items: Item[] = [];
 
-  protected disposers: Array<() => void> = [];
+  protected readonly disposers: Array<() => void> = [];
 
-  public constructor(options?: Partial<ItemOptions>) {
-    Object.assign(this, combine({ template: 'item', label: 'Item', icon: 'icon-home' }, options));
+  public constructor(attributes?: Attributes) {
+    Object.assign(this, merge({ template: 'item', label: 'Item', icon: 'icon-home' }, attributes));
   }
 
   public dispose() {
-    for (const disposer of this.disposers) {
-      disposer();
-    }
-    for (const item of this.items) {
-      item.dispose();
-    }
+    this.disposers.forEach(disposer => disposer());
+    this.disposers.length = 0;
+    this.items.forEach(item => item.dispose());
     this.items.length = 0;
   }
 }
@@ -39,8 +36,8 @@ export class Item {
 export class Object3D extends Item {
   public root!: THREE.Object3D;
 
-  public constructor(options?: Partial<ItemOptions>) {
-    super(combine({ template: 'object-3d', label: 'Object3D', icon: 'icon-view3d' }, options));
+  public constructor(attributes?: Attributes) {
+    super(merge({ template: 'object-3d', label: 'Object3D', icon: 'icon-view3d' }, attributes));
   }
 
   public dispose() {

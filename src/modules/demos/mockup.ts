@@ -38,7 +38,9 @@ export class MockupModel extends models.Item {
   }
 
   public set selectedIndex(value: number | undefined) {
-    if (value === this.index) { return; }
+    if (value === this.index) {
+       return;
+    }
     if (value === undefined) {
       this.index = undefined;
     } else if (value >= 0 && value < this.items.length && Math.round(value) === value) {
@@ -76,7 +78,7 @@ export class Mockup extends Demo {
   private dragOrigin = new THREE.Vector3();
   private plane = new THREE.Plane();
 
-  private disposers!: Array<() => void>;
+  private readonly disposers: Array<() => void> = [];
 
   private coneTarget!: THREE.Object3D;
 
@@ -90,18 +92,19 @@ export class Mockup extends Demo {
     this.setupScene(canvas);
     this.setupObjects();
 
-    this.disposers = [
+    this.disposers.push(
       reaction(
         () => (this.model as MockupModel).selectedItem,
-        (item) => this.select(this.objects, item ? (item as models.Object3D).root : undefined),
+        (item) => this.select(this.objects, item && (item as models.Object3D).root),
         { fireImmediately: true },
       ),
-    ];
+    );
   }
 
   public dispose() {
     super.dispose();
-    for (const disposer of this.disposers) { disposer(); }
+    this.disposers.forEach(disposer => disposer());
+    this.disposers.length = 0;
     this.canvas.removeEventListener('pointerdown', this.pick);
     this.canvas.removeEventListener('pointermove', this.drag);
     this.canvas.removeEventListener('pointerup', this.drop);
@@ -218,9 +221,8 @@ export class Mockup extends Demo {
     this.coneTarget = r.root;
 
     this.model.items.push(a, b, b1, b2, r, c, d);
-    for (const item of this.model.items) {
-      this.objects.items.push((item as models.Object3D).root);
-    }
+    this.model.items.forEach(item => this.objects.items.push((item as models.Object3D).root));
+
     this.root.add(a.root);
     this.root.add(b.root);
     this.root.add(r.root);
@@ -229,15 +231,11 @@ export class Mockup extends Demo {
 
     this.moveControl = new drag.AxisDragControl();
     this.moveControl.root.scale.setScalar(0.2);
-    for (const item of this.moveControl.items) {
-      this.handles.items.push(item.handle);
-    }
+    this.moveControl.items.forEach(item => this.handles.items.push(item.handle));
 
     this.coneControl = new drag.ConeDragControl();
     this.coneControl.root.scale.setScalar(0.25);
-    for (const item of this.coneControl.items) {
-      this.handles.items.push(item.handle);
-    }
+    this.coneControl.items.forEach(item => this.handles.items.push(item.handle));
   }
 
   private hover(group: SelectionGroup, object?: THREE.Object3D) {
@@ -245,13 +243,17 @@ export class Mockup extends Demo {
   }
 
   private select(group: SelectionGroup, object?: THREE.Object3D) {
-    if (object === group.selected) { return; }
+    if (object === group.selected) {
+      return;
+    }
     if (group.selected) {
       group.selected.remove(this.activeControl!.root);
     }
 
     group.selected = object;
-    if (!object) { return; }
+    if (!object) {
+      return;
+    }
 
     this.activeControl = object === this.coneTarget ? this.coneControl : this.moveControl;
     object.add(this.activeControl.root);
@@ -272,7 +274,9 @@ export class Mockup extends Demo {
   }
 
   private pick = (e: PointerEvent) => {
-    if (this.dragHandler) { return; }
+    if (this.dragHandler) {
+      return;
+    }
 
     if (e.buttons & 2) {
       this.hover(this.handles);
@@ -280,7 +284,9 @@ export class Mockup extends Demo {
       return;
     }
 
-    if (!(e.buttons & 1)) { return; }
+    if (!(e.buttons & 1)) {
+      return;
+    }
 
     const xy = this.xyFromEvent(e);
     let rayCast: THREE.Intersection | undefined;
@@ -305,7 +311,9 @@ export class Mockup extends Demo {
     }
 
     rayCast = this.rayCast(this.objects.items, xy);
-    if (!rayCast) { return; }
+    if (!rayCast) {
+      return;
+    }
 
     for (const item of this.model.items) {
       if (rayCast.object === (item as models.Object3D).root) {
@@ -328,7 +336,9 @@ export class Mockup extends Demo {
 
     } else {
 
-      if (e.buttons & 3) { return; }
+      if (e.buttons & 3) {
+        return;
+      }
 
       let rayCast: THREE.Intersection | undefined;
       if (this.objects.selected) {

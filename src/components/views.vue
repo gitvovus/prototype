@@ -49,14 +49,14 @@
           <scroller :min="0" :max="view2d.images.items.length - 1" v-model="view2d.images.selectedIndex"/>
         </div>
       </view-2d>
-      <div class="anchor h-center top">
+      <!-- <div class="anchor h-center top">
         <div class="toolbar-top">
           <icon img="icon-home" for="page-home"/>
           <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
           <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
           <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
         </div>
-      </div>
+      </div> -->
     </div>
     <tools v-show="tools.show">
       <div v-if="layouts.selectedItem.show2d">
@@ -141,25 +141,6 @@ export default class Views extends Vue {
   private get fullscreen() {
     return this.model.fullscreen;
   }
-
-  private mounted() {
-    this.disposer = reaction(
-      () => this.model.fullscreen.show,
-      (show: boolean) => {
-        try {
-          if (show) {
-            this.$el.getElementsByClassName('main')[0]!.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        } catch (e) {}
-      },
-    );
-  }
-
-  private beforeDestroy() {
-    this.disposer();
-  }
 }
 </script>
 
@@ -189,12 +170,13 @@ export default class Views extends Vue {
 .filter-panel {
   position: absolute;
   bottom: 0;
+  margin: 5px;
+  border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 0 5px 0 0;
 }
 .filter-wrapper {
   display: inline-block;
   width: 100px;
-  padding: 10px;
+  padding: 8px 10px 6px;
 }
 </style>

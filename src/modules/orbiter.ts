@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { clamp } from '@/lib/std';
 
-export interface OrbiterOptions {
+export interface Options {
   phi: number;
   theta: number;
   radius: number;
@@ -26,7 +26,7 @@ export class Orbiter {
   public movementSpeed = 10;
   public rotationSpeed = 1;
 
-  private canvas!: HTMLCanvasElement;
+  private eventSource: HTMLElement;
 
   private minTheta = -1.5;
   private maxTheta = 1.5;
@@ -34,14 +34,14 @@ export class Orbiter {
   private phiRotation = 0;
   private thetaRotation = 0;
 
-  private initializer: Partial<OrbiterOptions> = {};
+  private initializer: Partial<Options> = {};
   private lastUpdate = Date.now() * 0.001;
   private trackPointer = false;
   private pointer = { x: 0, y: 0 };
   private panX = new THREE.Vector3();
   private panY = new THREE.Vector3();
 
-  public constructor(canvas: HTMLCanvasElement, initializer?: Partial<OrbiterOptions>) {
+  public constructor(eventSource: HTMLElement, initializer?: Partial<Options>) {
     Object.assign(this, initializer);
     Object.assign(this.initializer, {
       phi: this.phi,
@@ -55,13 +55,13 @@ export class Orbiter {
       rotationSpeed: this.rotationSpeed,
     });
 
-    this.canvas = canvas;
-    canvas.addEventListener('pointerdown', this.pick);
-    canvas.addEventListener('pointermove', this.drag);
-    canvas.addEventListener('pointerup', this.drop);
-    canvas.addEventListener('wheel', this.wheel);
-    canvas.addEventListener('keydown', this.keyDown);
-    canvas.addEventListener('keyup', this.keyUp);
+    this.eventSource = eventSource;
+    eventSource.addEventListener('pointerdown', this.pick);
+    eventSource.addEventListener('pointermove', this.drag);
+    eventSource.addEventListener('pointerup', this.drop);
+    eventSource.addEventListener('wheel', this.wheel);
+    eventSource.addEventListener('keydown', this.keyDown);
+    eventSource.addEventListener('keyup', this.keyUp);
   }
 
   public update(camera: THREE.Camera) {
@@ -90,7 +90,7 @@ export class Orbiter {
   }
 
   public dispose() {
-    const canvas = this.canvas;
+    const canvas = this.eventSource;
     canvas.removeEventListener('pointerdown', this.pick);
     canvas.removeEventListener('pointermove', this.drag);
     canvas.removeEventListener('pointerup', this.drop);
@@ -167,7 +167,9 @@ export class Orbiter {
   }
 
   private pick = (e: PointerEvent) => {
-    if (!(e.buttons & 3) || this.trackPointer) { return; }
+    if (!(e.buttons & 3) || this.trackPointer) {
+      return;
+    }
 
     const cosPhi = Math.cos(this.phi);
     const sinPhi = Math.sin(this.phi);
@@ -179,11 +181,13 @@ export class Orbiter {
     this.trackPointer = true;
     this.pointer.x = e.offsetX;
     this.pointer.y = e.offsetY;
-    this.canvas.setPointerCapture(e.pointerId);
+    this.eventSource.setPointerCapture(e.pointerId);
   }
 
   private drag = (e: PointerEvent) => {
-    if (!this.trackPointer) { return; }
+    if (!this.trackPointer) {
+      return;
+    }
 
     const dx = e.offsetX - this.pointer.x;
     const dy = e.offsetY - this.pointer.y;
@@ -191,17 +195,17 @@ export class Orbiter {
     this.pointer.y = e.offsetY;
 
     if (e.buttons & 1) {
-      this.phi -= dx * 2 * Math.PI * this.rotationSpeed / this.canvas.width;
-      this.theta += dy * 2 * Math.PI * this.rotationSpeed / this.canvas.height;
+      this.phi -= dx * 2 * Math.PI * this.rotationSpeed / this.eventSource.clientWidth;
+      this.theta += dy * 2 * Math.PI * this.rotationSpeed / this.eventSource.clientHeight;
     } else if (e.buttons & 2) {
-      const delta = this.panX.clone().multiplyScalar(dx / this.canvas.width).add(this.panY.clone().multiplyScalar(-dy / this.canvas.height));
+      const delta = this.panX.clone().multiplyScalar(dx / this.eventSource.clientWidth).add(this.panY.clone().multiplyScalar(-dy / this.eventSource.clientHeight));
       this.lookAt.sub(delta);
     }
   }
 
   private drop = (e: PointerEvent) => {
     if (this.trackPointer && !(e.buttons & 3)) {
-      this.canvas.releasePointerCapture(e.pointerId);
+      this.eventSource.releasePointerCapture(e.pointerId);
       this.trackPointer = false;
     }
   }
