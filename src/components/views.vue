@@ -23,7 +23,7 @@
   <div class="main">
     <div class="layout">
       <view-3d v-show="layouts.selectedItem.show3d" :model="view3d">
-        <div class="tip">
+        <div class="tip right">
           <select v-model="view3d.selectedIndex">
             <option v-for="(item, index) in view3d.items" :key="index" :value="index">{{item}}</option>
           </select>
@@ -36,27 +36,27 @@
       <view-2d v-show="layouts.selectedItem.show2d" :model="view2d">
         <div class="filter-panel">
           <div class="filter-wrapper">
-            <slider :min="0" :max="100" v-model="view2d.grayscale"/>
+            <scroller :min="0" :max="100" v-model="view2d.grayscale"/>
           </div>
           <div class="filter-wrapper">
-            <slider :min="0" :max="100" v-model="view2d.brightness"/>
+            <scroller :min="0" :max="100" v-model="view2d.brightness"/>
           </div>
           <div class="filter-wrapper">
-            <slider :min="0" :max="100" v-model="view2d.contrast"/>
+            <scroller :min="0" :max="100" v-model="view2d.contrast"/>
           </div>
-        </div>
-        <div class="v2-scroller">
-          <scroller :min="0" :max="view2d.images.items.length - 1" v-model="view2d.images.selectedIndex"/>
+          <div class="filter-wrapper">
+            <scroller :min="0" :max="view2d.images.items.length - 1" v-model="view2d.images.selectedIndex"/>
+          </div>
         </div>
       </view-2d>
-      <!-- <div class="anchor h-center top">
-        <div class="toolbar-top">
+      <div class="anchor h-center bottom">
+        <div class="toolbar-bottom">
           <icon img="icon-home" for="page-home"/>
           <icon v-for="(item, index) in layouts.items" :key="index+200" :for="item.id" :img="item.icon" :checked="index === layouts.selectedIndex"/>
           <icon :for="tools.id" :img="tools.icon" :checked="tools.show"/>
           <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
         </div>
-      </div> -->
+      </div>
     </div>
     <tools v-show="tools.show">
       <div v-if="layouts.selectedItem.show2d">
@@ -159,24 +159,16 @@ export default class Views extends Vue {
 .app-menu {
   display: none;
 }
-.v2-scroller {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  padding: 12px;
-  background-color: rgba(0, 0, 0, 0.2);
-}
 .filter-panel {
   position: absolute;
-  bottom: 0;
+  right: 0;
   margin: 5px;
   border-radius: 5px;
   background-color: rgba(0, 0, 0, 0.2);
 }
 .filter-wrapper {
   display: inline-block;
-  width: 100px;
-  padding: 8px 10px 6px;
+  height: 100px;
+  padding: 8px 8px 6px;
 }
 </style>

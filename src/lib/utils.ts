@@ -8,3 +8,7 @@ export function currentTargetOffset(e: MouseEvent) {
   const rect = (e.currentTarget as Element).getBoundingClientRect();
   return [e.clientX - rect.left, e.clientY - rect.top];
 }
+
+export function stopPropagation(e: Event) {
+  e.stopPropagation();
+}

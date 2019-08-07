@@ -48,7 +48,7 @@ export class Controller {
     this.el.addEventListener('pointermove', this.drag);
     this.el.addEventListener('pointerup', this.drop);
     this.el.addEventListener('wheel', this.wheel);
-    this.resetButton.on('pointerdown', this.stop);
+    this.resetButton.on('pointerdown', utils.stopPropagation);
     this.resetButton.on('click', this.reset);
     this.disposers = [
       reaction(
@@ -98,8 +98,6 @@ export class Controller {
     this.root.attributes.height = this.height;
     this.scene.attributes.transform = toSvgMatrix(this.transform.multiply(this.viewTransform));
   }
-
-  private stop = (e: Event) => e.stopPropagation();
 
   private pick = (e: PointerEvent) => {
     if (e.buttons & 1) {

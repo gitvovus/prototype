@@ -136,10 +136,10 @@ export function cubic(x: number, f: (x: number) => number) {
  */
 export function bicubic(x: number, y: number, f: (x: number, y: number) => number) {
   const p = [
-    cubic(x, (x) => f(x, -1)),
-    cubic(x, (x) => f(x, 0)),
-    cubic(x, (x) => f(x, 1)),
-    cubic(x, (x) => f(x, 2)),
+    cubic(x, x => f(x, -1)),
+    cubic(x, x => f(x, 0)),
+    cubic(x, x => f(x, 1)),
+    cubic(x, x => f(x, 2)),
   ];
-  return cubic(y, (x) => p[x + 1]);
+  return cubic(y, x => p[x + 1]);
 }

@@ -6,7 +6,7 @@ import * as THREE from 'three';
  * @param root root object to dispose.
  */
 export function dispose(root: THREE.Object3D) {
-  root.traverse((child) => {
+  root.traverse(child => {
     const x: any = child;
     if (x.geometry) {
       x.geometry.dispose();

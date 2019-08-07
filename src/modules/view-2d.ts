@@ -2,6 +2,7 @@ import { computed, observable, reaction} from 'mobx';
 
 import * as img from '@/lib/images';
 import * as svg from '@/lib/svg';
+import * as utils from '@/lib/utils';
 import * as msg from '@/modules/messages';
 import { Controller } from '@/modules/svg-controller';
 import { List } from '@/modules/list';
@@ -110,8 +111,8 @@ export class View2d {
   public mount(el: HTMLElement) {
     this.controller.mount(el);
     this.stamps.forEach(item => {
-      item.on('pointerdown', (e: Event) => e.stopPropagation());
-      item.on('click', (e: Event) => item.index = 2);
+      item.on('pointerdown', utils.stopPropagation);
+      item.on('click', () => item.index = 2);
     });
     window.addEventListener('resize', this.resize);
     this.resize();

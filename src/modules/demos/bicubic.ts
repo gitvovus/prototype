@@ -5,6 +5,7 @@ import * as img from '@/lib/images';
 import { clamp } from '@/lib/std';
 import * as models from '@/modules/models';
 import { Orbiter } from '@/modules/orbiter';
+import { SelectionGroup } from '@/modules/selection-group';
 
 import { Demo } from '@/modules/demos/demo';
 
@@ -13,10 +14,10 @@ export class Bicubic extends Demo {
 
   private z: number[] = [];
   private meshes: THREE.Mesh[] = [];
-  private selectedMesh?: THREE.Mesh;
   private coordinateGrid?: THREE.LineSegments;
   private loRes?: THREE.LineSegments;
   private hiRes?: THREE.LineSegments;
+  private group = new SelectionGroup();
 
   private raycaster = new THREE.Raycaster();
   private trackPointer = false;
@@ -84,11 +85,6 @@ export class Bicubic extends Demo {
     return 0.5 * Math.cos(x) * Math.cos(y);
   }
 
-  private disposeMesh(mesh: THREE.Mesh | THREE.LineSegments) {
-    mesh.geometry.dispose();
-    (mesh.material as THREE.Material).dispose();
-  }
-
   private interpolate() {
     const size = this.gridSize;
     this.root.scale.setScalar(this.fitSize / size);
@@ -100,10 +96,11 @@ export class Bicubic extends Demo {
 
     const oldSize = Math.round(Math.sqrt(this.meshes.length));
     if (oldSize !== size) {
-      this.selectedMesh = undefined;
+      this.group.selected = undefined;
+      this.group.hovered = undefined;
       for (const mesh of this.meshes) {
         this.root.remove(mesh);
-        this.disposeMesh(mesh);
+        geometry.dispose(mesh);
       }
       this.meshes = [];
       for (let y = 0; y < size; ++y) {
@@ -125,7 +122,7 @@ export class Bicubic extends Demo {
 
     if (this.coordinateGrid) {
       this.root.remove(this.coordinateGrid);
-      this.disposeMesh(this.coordinateGrid);
+      geometry.dispose(this.coordinateGrid);
     }
     this.coordinateGrid = new THREE.LineSegments(geometry.grid(this.gridSize, this.gridSize, (x, y) => new THREE.Vector3(x, y, this.minZ)),
       new THREE.LineBasicMaterial({ color: 0x0, transparent: true, opacity: 0.25 }));
@@ -134,7 +131,7 @@ export class Bicubic extends Demo {
     const visible = (this.loRes && this.loRes.visible) || false;
     if (this.loRes) {
       this.root.remove(this.loRes);
-      this.disposeMesh(this.loRes);
+      geometry.dispose(this.loRes);
     }
     const g = geometry.grid(size + 3, size + 3, (x, y) => new THREE.Vector3(x - 1.5, y - 1.5, get(x - 2, y - 2)));
     this.loRes = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: this.loResColor, transparent: true, opacity: 0.5 }));
@@ -143,7 +140,7 @@ export class Bicubic extends Demo {
 
     if (this.hiRes) {
       this.root.remove(this.hiRes);
-      this.disposeMesh(this.hiRes);
+      geometry.dispose(this.hiRes);
     }
 
     const subdiv = this.subdiv;
@@ -195,11 +192,24 @@ export class Bicubic extends Demo {
         }
       }
       this.interpolate();
-    } else if (this.selectedMesh) {
-      const [x, y] = this.meshXY(this.selectedMesh);
+    } else if (this.group.selected) {
+      const [x, y] = this.meshXY(this.group.selected as THREE.Mesh);
       this.setZ(x, y, z(x, y));
       this.interpolate();
     }
+  }
+
+  private xyFromEvent(e: PointerEvent) {
+    return {
+      x: (e.offsetX / this.canvas.width) * 2 - 1,
+      y: (e.offsetY / this.canvas.height) * -2 + 1,
+    };
+  }
+
+  private rayCast(items: THREE.Object3D[], xy: { x: number, y: number }): THREE.Intersection | undefined {
+    this.raycaster.setFromCamera(xy, this.camera);
+    const intersections = this.raycaster.intersectObjects(items);
+    return intersections.length > 0 ? intersections[0] : undefined;
   }
 
   private pick = (e: PointerEvent) => {
@@ -207,36 +217,28 @@ export class Bicubic extends Demo {
       return;
     }
 
-    const x = (e.offsetX / this.canvas.width) * 2 - 1;
-    const y = (e.offsetY / this.canvas.height) * (-2) + 1;
-    this.raycaster.setFromCamera({ x, y }, this.camera);
-    const intersections = this.raycaster.intersectObjects(this.meshes);
-    if (intersections.length === 0) {
-      if (this.selectedMesh) {
-        (this.selectedMesh.material as THREE.MeshPhongMaterial).color.set(this.meshColor);
-      }
+    const xy = this.xyFromEvent(e);
+    const rayCast = this.rayCast(this.meshes, xy);
+    if (!rayCast) {
+      this.group.selected = undefined;
       return;
     }
 
-    const mesh = intersections[0].object as THREE.Mesh;
-    if (this.selectedMesh && this.selectedMesh !== mesh) {
-      (this.selectedMesh.material as THREE.MeshPhongMaterial).color.set(this.meshColor);
-    }
-    this.selectedMesh = mesh;
-    (this.selectedMesh.material as THREE.MeshPhongMaterial).color.set(this.highlight);
+    const mesh = rayCast.object as THREE.Mesh;
+    this.group.selected = mesh;
 
     // save initial position to apply delta to it when dragging
-    this.dragCenter = this.selectedMesh.position.clone();
+    this.dragCenter = mesh.position.clone();
 
     // calculate mesh parent hierarchy scale
-    this.selectedMesh.updateMatrixWorld(false);
-    const worldMatrix = this.selectedMesh.matrixWorld;
+    mesh.updateMatrixWorld(false);
+    const worldMatrix = mesh.matrixWorld;
     const worldScale = worldMatrix.getMaxScaleOnAxis();
-    const scale = worldScale / this.selectedMesh.scale.x; // not count mesh own scale
+    const scale = worldScale / mesh.scale.x; // not count mesh own scale
 
     // calculate viewport height in units, at the mesh's distance,
     // to convert pixels to units when dragging
-    const position = this.selectedMesh.position.clone();
+    const position = mesh.position.clone();
     position.applyMatrix4(worldMatrix);
     let height = 0;
     if (this.camera instanceof THREE.PerspectiveCamera) {
@@ -256,6 +258,9 @@ export class Bicubic extends Demo {
 
   private drag = (e: PointerEvent) => {
     if (!this.trackPointer) {
+      const xy = this.xyFromEvent(e);
+      const rayCast = this.rayCast(this.meshes, xy);
+      this.group.hovered = rayCast && rayCast.object || undefined;
       return;
     }
     const delta = this.pointer.y - e.offsetY;
