@@ -1,3 +1,10 @@
+export function assert(assertion: any, message?: any) {
+  if (!assertion) {
+    console.log(message);
+    debugger;
+  }
+}
+
 export function clamp(x: number, min: number, max: number): number {
   return Math.min(Math.max(x, min), max);
 }

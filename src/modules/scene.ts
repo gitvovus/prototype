@@ -6,8 +6,6 @@ import { CameraType } from '@/modules/types';
 import { Demo } from '@/modules/demos/demo';
 import { Bicubic } from '@/modules/demos/bicubic';
 import { Mockup } from '@/modules/demos/mockup';
-import { Reactor } from '@/modules/demos/reactor';
-import { Terrain } from '@/modules/demos/terrain';
 
 export class Scene {
   @observable public demo!: Demo;
@@ -27,7 +25,7 @@ export class Scene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AmbientLight(0x404040));
-    this.setCameraType(0);
+    this.setCameraType(CameraType.PERSPECTIVE);
     this.demo = new Demo(this.scene, this.camera, canvas);
 
     window.addEventListener('resize', this.resize);
@@ -47,12 +45,6 @@ export class Scene {
         return;
       case 'mockup':
         this.demo = new Mockup(this.scene, this.camera, this.renderer.domElement);
-        return;
-      case 'reactor':
-        this.demo = new Reactor(this.scene, this.camera, this.renderer.domElement);
-        return;
-      case 'terrain':
-        this.demo = new Terrain(this.scene, this.camera, this.renderer.domElement);
         return;
     }
   }

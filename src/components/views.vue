@@ -57,6 +57,17 @@
           <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
         </div>
       </div>
+      <!-- reactive tests -->
+      <!-- <div class="sample-wrapper">
+        <div>
+          Selection:<br/>
+          <sample-view :model="model.selection"/>
+        </div>
+        <div>
+          Multi selection:<br/>
+          <sample-view :model="model.multiSelection"/>
+        </div>
+      </div> -->
     </div>
     <tools v-show="tools.show">
       <div v-if="layouts.selectedItem.show2d">
@@ -170,5 +181,14 @@ export default class Views extends Vue {
   display: inline-block;
   height: 100px;
   padding: 8px 8px 6px;
+}
+.sample-wrapper {
+  position: absolute;
+  margin: 5px;
+  background-color: $bg-dark;
+  box-shadow: $shadow-text;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 10px;
 }
 </style>

@@ -4,7 +4,7 @@ import * as img from '@/lib/images';
 import * as svg from '@/lib/svg';
 import * as utils from '@/lib/utils';
 import * as msg from '@/modules/messages';
-import { Controller } from '@/modules/svg-controller';
+import { Controller } from '@/modules/view-2d-controller';
 import { List } from '@/modules/list';
 
 import Worker from 'worker-loader!@/modules/workers/image-generator';

@@ -11,11 +11,11 @@ export class View3d extends List<string> {
   private disposers: Array<() => void> = [];
 
   public constructor() {
-    super(['bicubic', 'mockup', 'reactor', 'terrain'], 1);
+    super(['bicubic', 'mockup'], 1);
   }
 
   @computed public get demo() {
-    return this.scene ? this.scene.demo : undefined;
+    return this.scene && this.scene.demo;
   }
 
   public mount(canvas: HTMLCanvasElement) {

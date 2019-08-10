@@ -3,6 +3,8 @@ import { observable, reaction } from 'mobx';
 
 import App from '@/components/app.vue';
 
+// import * as reactive from '@/lib/reactive';
+
 import { List } from '@/modules/list';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
@@ -59,6 +61,11 @@ export class Application {
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
 
+  // reactive tests
+  // @observable public readonly sampleData: reactive.Sample[] = [...Array(5)].map((item, index) => new reactive.Sample(`sample #${index}`));
+  // public readonly selection = new reactive.Selection(this.sampleData);
+  // public readonly multiSelection = new reactive.MultiSelection(this.sampleData);
+
   private vue!: Vue;
 
   public run() {
@@ -67,6 +74,18 @@ export class Application {
 
     this.vue = new Vue({ render: (h) => h(App, { props: { model: this } }) });
     this.vue.$mount('#app');
+
+    // reactive tests
+    // (window as any).ins = (i: number, t: string) => {
+    //   this.sampleData.splice(i, 0, new reactive.Sample(t));
+    // };
+    // (window as any).rem = (i: number) => {
+    //   this.sampleData.splice(i, 1);
+    // };
+    // (window as any).report = () => {
+    //   console.log('selection:', this.selection.selectedItem);
+    //   console.log('multi selection:', this.multiSelection.selectedItems.map(item => item));
+    // };
   }
 
   private setupReactions() {
@@ -81,13 +100,11 @@ export class Application {
     reaction(
       () => this.fullscreen.show,
       (show: boolean) => {
-        try {
-          if (show) {
-            document.getElementsByClassName('main')[0]!.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        } catch (e) {}
+        if (show) {
+          document.getElementsByClassName('main')[0]!.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
       },
     );
   }

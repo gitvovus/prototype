@@ -17,6 +17,7 @@
     "no-bitwise": false,
     "no-consecutive-blank-lines": false,
     "no-console": false,
+    "no-debugger": false,
     "no-empty": false,
     "no-empty-interface": false,
     "no-shadowed-variable": false,

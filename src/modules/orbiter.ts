@@ -90,13 +90,13 @@ export class Orbiter {
   }
 
   public dispose() {
-    const canvas = this.eventSource;
-    canvas.removeEventListener('pointerdown', this.pick);
-    canvas.removeEventListener('pointermove', this.drag);
-    canvas.removeEventListener('pointerup', this.drop);
-    canvas.removeEventListener('wheel', this.wheel);
-    canvas.removeEventListener('keydown', this.keyDown);
-    canvas.removeEventListener('keyup', this.keyUp);
+    const eventSource = this.eventSource;
+    eventSource.removeEventListener('pointerdown', this.pick);
+    eventSource.removeEventListener('pointermove', this.drag);
+    eventSource.removeEventListener('pointerup', this.drop);
+    eventSource.removeEventListener('wheel', this.wheel);
+    eventSource.removeEventListener('keydown', this.keyDown);
+    eventSource.removeEventListener('keyup', this.keyUp);
   }
 
   private keyDown = (e: KeyboardEvent) => {
