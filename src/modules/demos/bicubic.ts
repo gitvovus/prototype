@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import * as geometry from '@/lib/geometry';
 import * as img from '@/lib/images';
 import { clamp } from '@/lib/std';
+import * as utils from '@/lib/utils';
 import * as models from '@/modules/models';
 import { Orbiter } from '@/modules/orbiter';
 import { SelectionGroup } from '@/modules/selection-group';
@@ -41,24 +42,24 @@ export class Bicubic extends Demo {
   private readonly hiResColor = 0x008000;
   private readonly fitSize = 2;
 
-  public constructor(scene: THREE.Scene, camera: THREE.Camera, canvas: HTMLCanvasElement) {
-    super(scene, camera, canvas);
+  public constructor(scene: THREE.Scene, camera: THREE.Camera, element: HTMLElement) {
+    super(scene, camera, element);
     this.model = new models.Item({ label: 'Bicubic interpolation' });
-    this.canvas.addEventListener('pointerdown', this.pick);
-    this.canvas.addEventListener('pointermove', this.drag);
-    this.canvas.addEventListener('pointerup', this.drop);
-    this.canvas.addEventListener('keydown', this.keyDown);
+    this.element.addEventListener('pointerdown', this.pick);
+    this.element.addEventListener('pointermove', this.drag);
+    this.element.addEventListener('pointerup', this.drop);
+    this.element.addEventListener('keydown', this.keyDown);
     this.viewer.dispose();
-    this.viewer = new Orbiter(canvas, { phi: -1, theta: 0.5, radius: 6, zoom: 1.5 });
+    this.viewer = new Orbiter(element, { phi: -1, theta: 0.5, radius: 6, zoom: 1.5 });
     this.setup();
   }
 
   public dispose() {
     super.dispose();
-    this.canvas.removeEventListener('pointerdown', this.pick);
-    this.canvas.removeEventListener('pointermove', this.drag);
-    this.canvas.removeEventListener('pointerup', this.drop);
-    this.canvas.removeEventListener('keydown', this.keyDown);
+    this.element.removeEventListener('pointerdown', this.pick);
+    this.element.removeEventListener('pointermove', this.drag);
+    this.element.removeEventListener('pointerup', this.drop);
+    this.element.removeEventListener('keydown', this.keyDown);
     this.scene.remove(this.root);
     geometry.dispose(this.root);
   }
@@ -199,13 +200,6 @@ export class Bicubic extends Demo {
     }
   }
 
-  private xyFromEvent(e: PointerEvent) {
-    return {
-      x: (e.offsetX / this.canvas.width) * 2 - 1,
-      y: (e.offsetY / this.canvas.height) * -2 + 1,
-    };
-  }
-
   private rayCast(items: THREE.Object3D[], xy: { x: number, y: number }): THREE.Intersection | undefined {
     this.raycaster.setFromCamera(xy, this.camera);
     const intersections = this.raycaster.intersectObjects(items);
@@ -247,12 +241,11 @@ export class Bicubic extends Demo {
     } else if (this.camera instanceof THREE.OrthographicCamera) {
       height = (this.camera.top - this.camera.bottom) / this.camera.zoom;
     }
-    this.dragScale = height / this.canvas.height / scale;
+    this.dragScale = height / this.element.clientHeight / scale;
 
     this.trackPointer = true;
-    this.pointer.x = e.offsetX;
-    this.pointer.y = e.offsetY;
-    this.canvas.setPointerCapture(e.pointerId);
+    [this.pointer.x, this.pointer.y] = utils.currentTargetOffset(e);
+    this.element.setPointerCapture(e.pointerId);
     e.stopImmediatePropagation();
   }
 
@@ -263,14 +256,15 @@ export class Bicubic extends Demo {
       this.group.hovered = rayCast && rayCast.object || undefined;
       return;
     }
-    const delta = this.pointer.y - e.offsetY;
+    const [x, y] = utils.currentTargetOffset(e);
+    const delta = this.pointer.y - y;
     const z = clamp(this.dragCenter.z + delta * this.dragScale, this.minZ, this.maxZ);
     this.reset(() => z);
   }
 
   private drop = (e: PointerEvent) => {
     if (this.trackPointer && !(e.buttons & 1)) {
-      this.canvas.releasePointerCapture(e.pointerId);
+      this.element.releasePointerCapture(e.pointerId);
       this.trackPointer = false;
     }
   }

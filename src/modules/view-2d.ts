@@ -34,13 +34,12 @@ export class View2d {
   private grayscaleFilter: svg.Item;
   private brightnessFilter: svg.Item;
   private contrastFilter: svg.Item;
-  @observable private grayscaleValue = 100;
-  @observable private brightnessValue = 100;
-  @observable private contrastValue = 100;
+  @observable private grayscaleValue = 0;
+  @observable private brightnessValue = 0;
+  @observable private contrastValue = 0;
 
   private deck: svg.Item;
   private stamps: svg.Item[] = [];
-
 
   private worker = new Worker();
 
@@ -60,8 +59,11 @@ export class View2d {
     reaction(
       () => this.images.selectedItem!,
       (item) => Object.assign(image.attributes, { x: -item.width / 2, y: -item.height / 2, width: item.width, height: item.height, href: item.source }),
-      { fireImmediately: true },
     );
+
+    this.grayscale = 0;
+    this.brightness = 100;
+    this.contrast = 100;
 
     this.createImages();
   }

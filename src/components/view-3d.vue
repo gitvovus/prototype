@@ -1,6 +1,9 @@
 <template>
-<div class="v3">
-  <canvas class="v3-viewport" tabindex="0"></canvas>
+<div class="v3" tabindex="0">
+  <canvas class="v3-canvas"></canvas>
+  <div class="v3-overlay">
+    <element-node :model="model.root"/>
+  </div>
   <slot/>
 </div>
 </template>
@@ -17,7 +20,7 @@ export default class View3d extends Vue {
   @Prop() private model!: Model;
 
   private mounted() {
-    this.model.mount(this.$el.getElementsByClassName('v3-viewport')[0] as HTMLCanvasElement);
+    this.model.mount(this.$el as HTMLElement);
   }
 
   private beforeDestroy() {
@@ -34,10 +37,19 @@ export default class View3d extends Vue {
   width: 100%;
   height: 100%;
   flex: 1 1 0;
-}
-.v3-viewport {
-  position: absolute;
   background-color: $bg-main;
+  outline: none;
+}
+.v3-canvas {
+  position: absolute;
+}
+.v3-overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   outline: none;
 }
 </style>

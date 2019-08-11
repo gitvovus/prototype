@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import { clamp } from '@/lib/std';
+import * as utils from '@/lib/utils';
 
 export interface Options {
   phi: number;
@@ -179,8 +180,7 @@ export class Orbiter {
     this.panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.radius);
 
     this.trackPointer = true;
-    this.pointer.x = e.offsetX;
-    this.pointer.y = e.offsetY;
+    [this.pointer.x, this.pointer.y] = utils.currentTargetOffset(e);
     this.eventSource.setPointerCapture(e.pointerId);
   }
 
@@ -189,10 +189,11 @@ export class Orbiter {
       return;
     }
 
-    const dx = e.offsetX - this.pointer.x;
-    const dy = e.offsetY - this.pointer.y;
-    this.pointer.x = e.offsetX;
-    this.pointer.y = e.offsetY;
+    const [x, y] = utils.currentTargetOffset(e);
+    const dx = x - this.pointer.x;
+    const dy = y - this.pointer.y;
+    this.pointer.x = x;
+    this.pointer.y = y;
 
     if (e.buttons & 1) {
       this.phi -= dx * 2 * Math.PI * this.rotationSpeed / this.eventSource.clientWidth;

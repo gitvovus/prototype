@@ -170,6 +170,7 @@ select {
 }
 .window-content {
   position: relative;
+  background-color: $bg-dark;
   flex: 1 1 auto;
   overflow: auto;
   pointer-events: auto;

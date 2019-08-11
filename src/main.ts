@@ -11,6 +11,7 @@ import Slider from '@/components/slider.vue';
 import Tools from '@/components/tools.vue';
 import View2d from '@/components/view-2d.vue';
 import View3d from '@/components/view-3d.vue';
+import ViewReact from '@/components/view-react.vue';
 import Views from '@/components/views.vue';
 
 import Item from '@/components/items/item.vue';
@@ -35,6 +36,7 @@ Vue.component('slider', Slider);
 Vue.component('tools', Tools);
 Vue.component('view-2d', View2d);
 Vue.component('view-3d', View3d);
+Vue.component('view-react', ViewReact);
 Vue.component('views', Views);
 
 Vue.component('item', Item);

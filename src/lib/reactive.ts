@@ -119,15 +119,3 @@ export class MultiSelection<T> {
     }
   }
 }
-
-export class Sample {
-  @observable public text: string;
-
-  public constructor(text: string) {
-    this.text = text;
-  }
-
-  @computed public get length() {
-    return this.text.length;
-  }
-}

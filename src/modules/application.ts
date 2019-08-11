@@ -3,68 +3,31 @@ import { observable, reaction } from 'mobx';
 
 import App from '@/components/app.vue';
 
-// import * as reactive from '@/lib/reactive';
-
 import { List } from '@/modules/list';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
+import { ViewReact } from '@/modules/view-react';
 
-export class Layout {
-  public readonly id!: string;
-  public readonly icon!: string;
-  public readonly label!: string;
-  public readonly show3d!: boolean;
-  public readonly show2d!: boolean;
-
-  public constructor(id: string, icon: string, label: string, show2d: boolean, show3d: boolean) {
-    this.id = id;
-    this.icon = icon;
-    this.label = label;
-    this.show2d = show2d;
-    this.show3d = show3d;
-  }
-}
-
-export class Tools {
-  public readonly id!: string;
-  @observable public icon!: string;
-  @observable public label!: string;
-  @observable public show!: boolean;
-
-  public constructor(id: string, icon: string, label: string, show: boolean) {
-    this.id = id;
-    this.icon = icon;
-    this.label = label;
-    this.show = show;
-  }
-}
-
-export enum Page {
-  HOME = 0,
-  VIEWS = 1,
-}
+import { Layout, Page, Tools } from '@/modules/types';
 
 export class Application {
   @observable public page = Page.VIEWS;
-  public readonly layouts = new List<Layout>(
-    [
-      new Layout('view3d', 'icon-view3d', '3D view', false, true ),
-      new Layout('view2d', 'icon-view2d', '2D view', true,  false),
-      new Layout('views',  'icon-views',  '3D + 2D', true,  true ),
-    ],
-    2,
-  );
+
+  public readonly layouts = new List<Layout>([
+    new Layout('view3d', 'icon-view3d', '3D view', false, true ),
+    new Layout('view2d', 'icon-view2d', '2D view', true,  false),
+    new Layout('views',  'icon-views',  '3D + 2D', true,  true ),
+  ], 2);
+
   public readonly view3d = new View3d();
   public readonly view2d = new View2d();
+  public readonly viewReact = new ViewReact();
+
   public readonly tools = new Tools('tools', 'icon-tools', 'Tools', false);
   public readonly lorem = new Tools('lorem', 'icon-tools', 'Lorem', false);
+  public readonly react = new Tools('react', 'icon-tools', 'React', false);
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
   public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
-
-  // reactive tests
-  // @observable public readonly sampleData: reactive.Sample[] = [...Array(5)].map((item, index) => new reactive.Sample(`sample #${index}`));
-  // public readonly selection = new reactive.Selection(this.sampleData);
-  // public readonly multiSelection = new reactive.MultiSelection(this.sampleData);
 
   private vue!: Vue;
 
@@ -74,18 +37,6 @@ export class Application {
 
     this.vue = new Vue({ render: (h) => h(App, { props: { model: this } }) });
     this.vue.$mount('#app');
-
-    // reactive tests
-    // (window as any).ins = (i: number, t: string) => {
-    //   this.sampleData.splice(i, 0, new reactive.Sample(t));
-    // };
-    // (window as any).rem = (i: number) => {
-    //   this.sampleData.splice(i, 1);
-    // };
-    // (window as any).report = () => {
-    //   console.log('selection:', this.selection.selectedItem);
-    //   console.log('multi selection:', this.multiSelection.selectedItems.map(item => item));
-    // };
   }
 
   private setupReactions() {

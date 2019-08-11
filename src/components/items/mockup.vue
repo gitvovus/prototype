@@ -12,11 +12,11 @@
 import { Observer } from 'mobx-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { MockupModel } from '@/modules/demos/mockup';
+import { Model } from '@/modules/demos/mockup';
 
 @Observer
 @Component
 export default class Mockup extends Vue {
-  @Prop() private model!: MockupModel;
+  @Prop() private model!: Model;
 }
 </script>

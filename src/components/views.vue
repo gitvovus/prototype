@@ -5,6 +5,7 @@
       :key="index+100" :id="item.id" :value="index" v-model="layouts.selectedIndex">
     <input type="checkbox" :id="tools.id" v-model="tools.show">
     <input type="checkbox" :id="lorem.id" v-model="lorem.show">
+    <input type="checkbox" :id="react.id" v-model="react.show">
     <input type="checkbox" :id="modal.id" v-model="modal.show">
     <input type="checkbox" :id="fullscreen.id" v-model="fullscreen.show">
   </div>
@@ -16,6 +17,7 @@
       <span class="separator"/>
       <label :for="tools.id" :class="{ active: tools.show }">{{tools.label}}</label>
       <label :for="lorem.id" :class="{ active: lorem.show }">{{lorem.label}}</label>
+      <label :for="react.id" :class="{ active: react.show }">{{react.label}}</label>
       <span class="separator"/>
       <label :for="modal.id" :class="{ active: modal.show }">{{modal.label}}</label>
     </div>
@@ -57,17 +59,6 @@
           <icon :for="fullscreen.id" :img="fullscreen.icon" :checked="fullscreen.show"/>
         </div>
       </div>
-      <!-- reactive tests -->
-      <!-- <div class="sample-wrapper">
-        <div>
-          Selection:<br/>
-          <sample-view :model="model.selection"/>
-        </div>
-        <div>
-          Multi selection:<br/>
-          <sample-view :model="model.multiSelection"/>
-        </div>
-      </div> -->
     </div>
     <tools v-show="tools.show">
       <div v-if="layouts.selectedItem.show2d">
@@ -96,6 +87,16 @@
             <lorem/>
           </div>
         </div>
+      </div>
+    </div>
+  </floating>
+  <floating v-show="react.show">
+    <div class="window">
+      <div class="window-header">
+        <div class="window-title">React</div>
+      </div>
+      <div class="window-content">
+        <view-react :model="model.viewReact"/>
       </div>
     </div>
   </floating>
@@ -145,6 +146,10 @@ export default class Views extends Vue {
     return this.model.lorem;
   }
 
+  private get react() {
+    return this.model.react;
+  }
+
   private get modal() {
     return this.model.modal;
   }
@@ -181,14 +186,5 @@ export default class Views extends Vue {
   display: inline-block;
   height: 100px;
   padding: 8px 8px 6px;
-}
-.sample-wrapper {
-  position: absolute;
-  margin: 5px;
-  background-color: $bg-dark;
-  box-shadow: $shadow-text;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-column-gap: 10px;
 }
 </style>

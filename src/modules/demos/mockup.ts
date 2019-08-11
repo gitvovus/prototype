@@ -9,7 +9,7 @@ import { SelectionGroup } from '@/modules/selection-group';
 
 import { Demo } from '@/modules/demos/demo';
 
-export class MockupModel extends models.Item {
+export class Model extends models.Item {
   @observable private index?: number;
 
   public constructor() {
@@ -43,7 +43,7 @@ export class MockupModel extends models.Item {
     }
     if (value === undefined) {
       this.index = undefined;
-    } else if (value >= 0 && value < this.items.length && Math.round(value) === value) {
+    } else if (value >= 0 && value < this.items.length) {
       this.index = value;
     }
   }
@@ -57,7 +57,9 @@ export class MockupModel extends models.Item {
       this.selectedIndex = undefined;
     } else {
       const index = this.items.indexOf(value);
-      if (index !== -1) { this.index = index; }
+      if (index !== -1) {
+        this.index = index;
+      }
     }
   }
 }
@@ -82,19 +84,19 @@ export class Mockup extends Demo {
 
   private coneTarget!: THREE.Object3D;
 
-  public constructor(scene: THREE.Scene, camera: THREE.Camera, canvas: HTMLCanvasElement) {
-    super(scene, camera, canvas);
+  public constructor(scene: THREE.Scene, camera: THREE.Camera, element: HTMLElement) {
+    super(scene, camera, element);
 
-    this.canvas.addEventListener('pointerdown', this.pick);
-    this.canvas.addEventListener('pointermove', this.drag);
-    this.canvas.addEventListener('pointerup', this.drop);
+    this.element.addEventListener('pointerdown', this.pick);
+    this.element.addEventListener('pointermove', this.drag);
+    this.element.addEventListener('pointerup', this.drop);
 
-    this.setupScene(canvas);
+    this.setupScene(element);
     this.setupObjects();
 
     this.disposers.push(
       reaction(
-        () => (this.model as MockupModel).selectedItem,
+        () => (this.model as Model).selectedItem,
         (item) => this.select(this.objects, item && (item as models.Object3D).root),
         { fireImmediately: true },
       ),
@@ -105,16 +107,16 @@ export class Mockup extends Demo {
     super.dispose();
     this.disposers.forEach(disposer => disposer());
     this.disposers.length = 0;
-    this.canvas.removeEventListener('pointerdown', this.pick);
-    this.canvas.removeEventListener('pointermove', this.drag);
-    this.canvas.removeEventListener('pointerup', this.drop);
+    this.element.removeEventListener('pointerdown', this.pick);
+    this.element.removeEventListener('pointermove', this.drag);
+    this.element.removeEventListener('pointerup', this.drop);
     this.scene.remove(this.root);
     geometry.dispose(this.root);
   }
 
-  private setupScene(canvas: HTMLCanvasElement) {
+  private setupScene(element: HTMLElement) {
     this.viewer.dispose();
-    this.viewer = new Orbiter(canvas, {
+    this.viewer = new Orbiter(element, {
       phi: -Math.PI / 2, theta: Math.PI / 6,
       radius: 5, minRadius: 1,
       lookAt: new THREE.Vector3(0, 0, 0.25), zoom: 1.5 },
@@ -149,7 +151,7 @@ export class Mockup extends Demo {
   }
 
   private setupObjects() {
-    this.model = new MockupModel();
+    this.model = new Model();
 
     const a = new models.Object3D({ label: 'Object A' });
     const b = new models.Object3D({ label: 'Object B' });
@@ -260,13 +262,6 @@ export class Mockup extends Demo {
     this.activeControl.target = object;
   }
 
-  private xyFromEvent(e: PointerEvent) {
-    return {
-      x: (e.offsetX / this.canvas.width) * 2 - 1,
-      y: (e.offsetY / this.canvas.height) * -2 + 1,
-    };
-  }
-
   private rayCast(items: THREE.Object3D[], xy: { x: number, y: number }): THREE.Intersection | undefined {
     this.raycaster.setFromCamera(xy, this.camera);
     const intersections = this.raycaster.intersectObjects(items);
@@ -280,7 +275,7 @@ export class Mockup extends Demo {
 
     if (e.buttons & 2) {
       this.hover(this.handles);
-      (this.model as MockupModel).selectedItem = undefined;
+      (this.model as Model).selectedItem = undefined;
       return;
     }
 
@@ -303,6 +298,7 @@ export class Mockup extends Demo {
             this.camera.getWorldDirection(dir);
             this.plane.setFromNormalAndCoplanarPoint(dir, rayCast.point);
 
+            this.element.setPointerCapture(e.pointerId);
             e.stopImmediatePropagation();
             return;
           }
@@ -317,7 +313,7 @@ export class Mockup extends Demo {
 
     for (const item of this.model.items) {
       if (rayCast.object === (item as models.Object3D).root) {
-        (this.model as MockupModel).selectedItem = item;
+        (this.model as Model).selectedItem = item;
         break;
       }
     }
@@ -366,8 +362,9 @@ export class Mockup extends Demo {
   }
 
   private drop = (e: PointerEvent) => {
-    if ((e.buttons & 1) === 0) {
+    if (this.dragHandler && (e.buttons & 1) === 0) {
       this.dragHandler = undefined;
+      this.element.releasePointerCapture(e.pointerId);
     }
   }
 }

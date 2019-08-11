@@ -13,8 +13,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import * as img from '@/lib/images';
 import { View2d as Model } from '@/modules/view-2d';
-import { List } from '@/modules/list';
-import { ImageData } from '@/modules/view-2d';
 
 const step = 10;
 const lite: img.RGBA = [0xc8, 0xd8, 0xe8, 0xff];

@@ -97,8 +97,9 @@
     "/>
 </defs>
 <g id="scene">
+  <path d="M0 250A250 250 0 0 1 -150 -200" stroke="rgba(0, 0, 0, 0.25)" stroke-width="60" stroke-linecap="round" fill="none"/>
   <image id="image" filter="url(#image-filter)" pointer-events="none"/>
-  <g id="controls" transform="translate(-250 -150)">
+  <g id="controls" transform="translate(-200 -150)">
     <use id="center" class="thing" tabindex="0" href="#push"/>
     <use id="top"    class="thing" tabindex="0" href="#arrow" transform="rotate(0)   translate(0 -45)"/>
     <use id="right"  class="thing" tabindex="0" href="#arrow" transform="rotate(90)  translate(0 -45)"/>
@@ -120,7 +121,7 @@
       <text x="0" y="2">$</text>
     </g>
   </g>
-  <g transform="translate(-250 150)">
+  <g transform="translate(-200 150)">
     <use class="thing" disabled="true" tabindex="0" href="#push"/>
     <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(0)   translate(0 -45)"/>
     <use class="thing" disabled="true" tabindex="0" href="#arrow" transform="rotate(90)  translate(0 -45)"/>

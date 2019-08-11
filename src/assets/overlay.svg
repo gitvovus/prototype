@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<style>
+  .handle {
+    fill: orange;
+    stroke: white;
+    outline: none;
+    filter: url(#shadow-3d);
+  }
+  .handle:hover:not([disabled]) {
+    fill: red;
+    filter: url(#highlight-3d);
+  }
+  .handle:focus:not([disabled]) {
+    fill: green;
+  }
+  .handle:active:not([disabled]) {
+    fill: #4080c0;
+  }
+</style>
+<defs>
+  <filter id="shadow-3d" x="-1" y="-1" width="3" height="3">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+    <feMerge>
+      <feMergeNode/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <filter id="highlight-3d" x="-1" y="-1" width="3" height="3">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="shadow"/>
+    <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+    <feFlood flood-color="white" result="color"/>
+    <feComposite in="color" operator="in" in2="blur"/>
+    <feMerge>
+      <feMergeNode/>
+      <feMergeNode in="shadow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <path id="compass-mark" d="M0 -45v-10" fill="none" stroke="white" stroke-width="4" transform="rotate(0)"/>
+  <g id="compass-ring">
+    <path fill-rule="evenodd" fill="green" stroke="white" filter="url(#shadow)"
+      d="
+        M60 0a60 60 0 0 1 -60 60a60 60 0 0 1 -60 -60 a60 60 0 0 1 60 -60a60 60 0 0 1 60 60z
+        M40 0a40 40 0 0 0 -40 -40a40 40 0 0 0 -40 40a40 40 0 0 0 40 40a40 40 0 0 0 40 -40z
+      "/>
+    <use href="#compass-mark" transform="rotate(0)"/>
+    <use href="#compass-mark" transform="rotate(30)"/>
+    <use href="#compass-mark" transform="rotate(60)"/>
+    <use href="#compass-mark" transform="rotate(90)"/>
+    <use href="#compass-mark" transform="rotate(120)"/>
+    <use href="#compass-mark" transform="rotate(150)"/>
+    <use href="#compass-mark" transform="rotate(180)"/>
+    <use href="#compass-mark" transform="rotate(210)"/>
+    <use href="#compass-mark" transform="rotate(240)"/>
+    <use href="#compass-mark" transform="rotate(270)"/>
+    <use href="#compass-mark" transform="rotate(300)"/>
+    <use href="#compass-mark" transform="rotate(330)"/>
+  </g>
+  <path id="compass-arrow" fill-rule="evenodd"
+    d="
+      M0 -75
+      A25 25 0 0 0 20 -55L20 -50A10 10 0 0 0 10 -40L10 -20A5 5 0 0 0 15 -15L15 -10A10 10 0 0 0 15 10L15 15A5 5 0 0 0 10 20L10 40A10 10 0 0 0 20 50L20 55A25 25 0 0 0 0 75
+      A25 25 0 0 0 -20 55L-20 50A10 10 0 0 0 -10 40L-10 20A5 5 0 0 0 -15 15L-15 10A10 10 0 0 0 -15 -10L-15 -15A5 5 0 0 0 -10 -20L-10 -40A10 10 0 0 0 -20 -50L-20 -55A25 25 0 0 0 0 -75z
+      M5 -45A5 5 0 0 0 -5 -45L-5 -20A5 5 0 0 0 5 -20z
+      M-5 45A5 5 0 0 0 5 45L5 20A5 5 0 0 0 -5 20z
+    "/>
+</defs>
+<g id="overlay">
+  <use href="#compass-ring"/>
+  <use id="azimuth" href="#compass-arrow" class="handle"/>
+</g>
+</svg>

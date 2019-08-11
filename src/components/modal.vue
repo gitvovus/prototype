@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { Tools } from '@/modules/application';
+import { Tools } from '@/modules/types';
 
 @Component
 export default class Modal extends Vue {

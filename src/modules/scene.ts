@@ -9,16 +9,17 @@ import { Mockup } from '@/modules/demos/mockup';
 
 export class Scene {
   @observable public demo!: Demo;
+  @observable public transform = new THREE.Matrix4();
 
-  private root!: Element;
+  private element!: HTMLElement;
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.Camera;
-  private requestedAnimationFrame = 0;
+  private animationFrame = 0;
 
-  public constructor(canvas: HTMLCanvasElement) {
-    this.root = canvas.parentElement!;
-    const background = new THREE.Color(getComputedStyle(canvas).backgroundColor || 'black');
+  public constructor(element: HTMLElement, canvas: HTMLCanvasElement) {
+    this.element = element;
+    const background = new THREE.Color(getComputedStyle(element).backgroundColor || 'black');
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
     this.renderer.setClearColor(background);
@@ -26,7 +27,7 @@ export class Scene {
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AmbientLight(0x404040));
     this.setCameraType(CameraType.PERSPECTIVE);
-    this.demo = new Demo(this.scene, this.camera, canvas);
+    this.demo = new Demo(this.scene, this.camera, element);
 
     window.addEventListener('resize', this.resize);
     this.resize();
@@ -41,10 +42,10 @@ export class Scene {
     this.demo.dispose();
     switch (demoName) {
       case 'bicubic':
-        this.demo = new Bicubic(this.scene, this.camera, this.renderer.domElement);
+        this.demo = new Bicubic(this.scene, this.camera, this.element);
         return;
       case 'mockup':
-        this.demo = new Mockup(this.scene, this.camera, this.renderer.domElement);
+        this.demo = new Mockup(this.scene, this.camera, this.element);
         return;
     }
   }
@@ -52,7 +53,7 @@ export class Scene {
   public setCameraType(type: CameraType) {
     this.scene.remove(this.camera);
 
-    const aspect = this.root.clientWidth / this.root.clientHeight;
+    const aspect = this.element.clientWidth / this.element.clientHeight;
     if (type === CameraType.PERSPECTIVE) {
       this.camera = new THREE.PerspectiveCamera(30, aspect, 0.1, 50);
     } else {
@@ -67,7 +68,7 @@ export class Scene {
   }
 
   public dispose() {
-    window.cancelAnimationFrame(this.requestedAnimationFrame);
+    window.cancelAnimationFrame(this.animationFrame);
     window.removeEventListener('resize', this.resize);
     this.demo.dispose();
     this.renderer.dispose();
@@ -75,13 +76,20 @@ export class Scene {
 
   private draw() {
     this.demo.update();
+    this.updateTransform();
     this.renderer.render(this.scene, this.camera);
-    this.requestedAnimationFrame = window.requestAnimationFrame(() => this.draw());
+    this.animationFrame = window.requestAnimationFrame(() => this.draw());
+  }
+
+  private updateTransform() {
+    if (!this.camera.matrixWorldInverse.equals(this.transform)) {
+      this.transform = this.camera.matrixWorld.clone();
+    }
   }
 
   private resize = () => {
-    const width = this.root.clientWidth;
-    const height = this.root.clientHeight;
+    const width = this.element.clientWidth;
+    const height = this.element.clientHeight;
     const aspect = width / height;
     this.renderer.setSize(width, height);
 

@@ -12,7 +12,8 @@
 <script lang="ts">
 import { Observer } from 'mobx-vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Sample, Selection, MultiSelection } from '@/lib/reactive';
+import { Selection, MultiSelection } from '@/lib/reactive';
+import { Sample } from '@/modules/view-react';
 
 @Observer
 @Component
