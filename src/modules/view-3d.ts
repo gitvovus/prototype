@@ -2,7 +2,7 @@ import { computed, observable, reaction } from 'mobx';
 import * as THREE from 'three';
 
 import * as svg from '@/lib/svg';
-import { List } from '@/modules/list';
+import { List } from '@/lib/reactive';
 import { Scene } from '@/modules/scene';
 import { CameraType } from '@/modules/types';
 

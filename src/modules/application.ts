@@ -3,7 +3,7 @@ import { observable, reaction } from 'mobx';
 
 import App from '@/components/app.vue';
 
-import { List } from '@/modules/list';
+import { List } from '@/lib/reactive';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
 import { ViewReact } from '@/modules/view-react';

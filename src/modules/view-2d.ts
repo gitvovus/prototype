@@ -5,7 +5,7 @@ import * as svg from '@/lib/svg';
 import * as utils from '@/lib/utils';
 import * as msg from '@/modules/messages';
 import { Controller } from '@/modules/view-2d-controller';
-import { List } from '@/modules/list';
+import { List } from '@/lib/reactive';
 
 import Worker from 'worker-loader!@/modules/workers/image-generator';
 
@@ -62,8 +62,8 @@ export class View2d {
     );
 
     this.grayscale = 0;
-    this.brightness = 100;
-    this.contrast = 100;
+    this.brightness = 50;
+    this.contrast = 50;
 
     this.createImages();
   }
@@ -93,8 +93,12 @@ export class View2d {
 
   public set brightness(value: number) {
     this.brightnessValue = value;
+    const v = 0.01 * value;
+    // TODO: adjust
+    const a = 5;
+    const f = a ** (2 * v - 1);
     for (const channel of this.brightnessFilter.items) {
-      channel.attributes.slope = 0.01 * value;
+      channel.attributes.slope = f;
     }
   }
 
@@ -104,9 +108,13 @@ export class View2d {
 
   public set contrast(value: number) {
     this.contrastValue = value;
+    const v = 0.01 * value;
+    // TODO: adjust
+    const a = 5;
+    const f = a ** (2 * v - 1);
     for (const channel of this.contrastFilter.items) {
-      channel.attributes.slope = 0.01 * value;
-      channel.attributes.intercept = 0.5 * (1 - 0.01 * value);
+      channel.attributes.slope = f;
+      channel.attributes.intercept = 0.5 * (1 - f);
     }
   }
 
