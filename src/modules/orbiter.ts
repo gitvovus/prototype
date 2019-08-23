@@ -124,12 +124,12 @@ export class Orbiter {
       case 'ArrowDown':
         this.thetaRotation = -1;
         break;
-      case 'Digit0':
-        this.phi = -Math.PI / 2;
-        this.theta = 0;
-        break;
       case 'Home':
         Object.assign(this, this.initializer);
+        break;
+      case 'End':
+        this.phi = -Math.PI / 2;
+        this.theta = 0;
         break;
       default: return;
     }

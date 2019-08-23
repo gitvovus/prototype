@@ -1,11 +1,12 @@
 import { computed, observable, reaction} from 'mobx';
 
 import * as img from '@/lib/images';
+import { List } from '@/lib/reactive';
 import * as svg from '@/lib/svg';
 import * as utils from '@/lib/utils';
 import * as msg from '@/modules/messages';
+import { Attributes, Item, merge } from '@/modules/models';
 import { Controller } from '@/modules/view-2d-controller';
-import { List } from '@/lib/reactive';
 
 import Worker from 'worker-loader!@/modules/workers/image-generator';
 
@@ -23,9 +24,47 @@ export class ImageData {
   }
 }
 
+export class ImagesTool extends Item {
+  private view: View2d;
+
+  public constructor(view: View2d, attributes?: Attributes) {
+    super(merge({ template: 'images-tool', label: 'Images', icon: 'icon-view2d' }, attributes));
+    this.view = view;
+  }
+
+  @computed public get grayscale() {
+    return this.view.grayscale;
+  }
+
+  public set grayscale(value: number) {
+    this.view.grayscale = value;
+  }
+
+  @computed public get brightness() {
+    return this.view.brightness;
+  }
+
+  public set brightness(value: number) {
+    this.view.brightness = value;
+  }
+
+  @computed public get contrast() {
+    return this.view.contrast;
+  }
+
+  public set contrast(value: number) {
+    this.view.contrast = value;
+  }
+
+  public get images() {
+    return this.view.images;
+  }
+}
+
 export class View2d {
   private static readonly imagesCount = 11;
 
+  public readonly model = new ImagesTool(this);
   public images!: List<ImageData>;
   @observable public root: svg.Item;
 
@@ -119,25 +158,18 @@ export class View2d {
   }
 
   public mount(el: HTMLElement) {
-    this.controller.mount(el);
     this.stamps.forEach(item => {
       item.on('pointerdown', utils.stopPropagation);
       item.on('click', () => item.index = 2);
     });
-    window.addEventListener('resize', this.resize);
-    this.resize();
+    this.controller.mount(el.getElementsByClassName('overlay')[0] as HTMLElement);
   }
 
   public unmount() {
-    window.removeEventListener('resize', this.resize);
     if (this.controller) {
       this.controller.unmount();
     }
     this.stamps.forEach(item => item.off());
-  }
-
-  public resize = () => {
-    this.controller.resize();
   }
 
   private createImages() {

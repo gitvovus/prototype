@@ -13,7 +13,7 @@ export class SelectionGroup {
 
   private readonly hoveredColor = 0x00c000;
   private readonly selectedColor = 0xd01010;
-  private readonly combinedColor = 0xe02020;
+  private readonly combinedColor = 0xff2020;
 
   public get hovered() {
     return this.hoveredObject;

@@ -38,7 +38,7 @@
   </filter>
   <path id="compass-mark" d="M0 -45v-10" fill="none" stroke="white" stroke-width="4" transform="rotate(0)"/>
   <g id="compass-ring">
-    <path fill-rule="evenodd" fill="green" stroke="white" filter="url(#shadow)"
+    <path fill-rule="evenodd" fill="green" stroke="white" filter="url(#shadow-3d)"
       d="
         M60 0a60 60 0 0 1 -60 60a60 60 0 0 1 -60 -60 a60 60 0 0 1 60 -60a60 60 0 0 1 60 60z
         M40 0a40 40 0 0 0 -40 -40a40 40 0 0 0 -40 40a40 40 0 0 0 40 40a40 40 0 0 0 40 -40z

@@ -19,7 +19,7 @@ export class Scene {
 
   public constructor(element: HTMLElement, canvas: HTMLCanvasElement) {
     this.element = element;
-    const background = new THREE.Color(getComputedStyle(element).backgroundColor || 'black');
+    const background = new THREE.Color(getComputedStyle(canvas).backgroundColor || 'black');
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
     this.renderer.setClearColor(background);

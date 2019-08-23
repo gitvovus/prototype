@@ -1,7 +1,8 @@
-import { computed, observable, reaction } from 'mobx';
+import { computed, reaction } from 'mobx';
 import * as THREE from 'three';
 
 import * as geometry from '@/lib/geometry';
+import { List } from '@/lib/reactive';
 import * as drag from '@/modules/drag-controls';
 import * as models from '@/modules/models';
 import { Orbiter } from '@/modules/orbiter';
@@ -10,57 +11,32 @@ import { SelectionGroup } from '@/modules/selection-group';
 import { Demo } from '@/modules/demos/demo';
 
 export class Model extends models.Item {
-  @observable private index?: number;
+  private list: List<models.Item>;
 
   public constructor() {
     super({ template: 'mockup', label: 'Mockup' });
+    this.list = new List(this.items);
+  }
 
-    this.disposers.push(reaction(
-      () => this.items.length,
-      () => {
-        if (this.items.length === 0) {
-          this.index = undefined;
-        } else {
-          if (this.index === undefined) {
-            this.index = 0;
-          } else {
-            if (this.index > this.items.length) {
-              this.index = this.items.length - 1;
-            }
-          }
-        }
-      },
-    ));
+  public dispose() {
+    super.dispose();
+    this.list.dispose();
   }
 
   @computed public get selectedIndex() {
-    return this.index;
+    return this.list.selectedIndex;
   }
 
   public set selectedIndex(value: number | undefined) {
-    if (value === this.index) {
-       return;
-    }
-    if (value === undefined) {
-      this.index = undefined;
-    } else if (value >= 0 && value < this.items.length) {
-      this.index = value;
-    }
+    this.list.selectedIndex = value;
   }
 
   @computed public get selectedItem() {
-    return this.index !== undefined ? this.items[this.index] : undefined;
+    return this.list.selectedItem;
   }
 
   public set selectedItem(value: models.Item | undefined) {
-    if (value === undefined) {
-      this.selectedIndex = undefined;
-    } else {
-      const index = this.items.indexOf(value);
-      if (index !== -1) {
-        this.index = index;
-      }
-    }
+    this.list.selectedItem = value;
   }
 }
 
@@ -219,7 +195,7 @@ export class Mockup extends Demo {
       new THREE.MeshPhongMaterial({ color: 0x800040, transparent: true, opacity: 0.75 }),
     );
     r.root.renderOrder = 1;
-    r.root.position.set(-0.5, -0.5, -0.05);
+    r.root.position.set(-0.3, -0.3, -0.05);
     this.coneTarget = r.root;
 
     this.model.items.push(a, b, b1, b2, r, c, d);
@@ -235,7 +211,7 @@ export class Mockup extends Demo {
     this.moveControl.root.scale.setScalar(0.2);
     this.moveControl.items.forEach(item => this.handles.items.push(item.handle));
 
-    this.coneControl = new drag.ConeDragControl();
+    this.coneControl = new drag.ConeDragControl(new THREE.Vector3(0, 0, 1), 0.5);
     this.coneControl.root.scale.setScalar(0.25);
     this.coneControl.items.forEach(item => this.handles.items.push(item.handle));
   }

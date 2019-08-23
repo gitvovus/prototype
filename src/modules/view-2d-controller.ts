@@ -22,7 +22,7 @@ export class Controller {
 
   private picked = { x: 0, y: 0 };
   private dragging = false;
-  private disposers: Array<() => void> = [];
+  private readonly disposers: Array<() => void> = [];
 
   public constructor(model: svg.Item) {
     this.root = model;
@@ -44,40 +44,33 @@ export class Controller {
 
   public mount(el: HTMLElement) {
     this.el = el;
-    this.el.addEventListener('pointerdown', this.pick);
-    this.el.addEventListener('pointermove', this.drag);
-    this.el.addEventListener('pointerup', this.drop);
-    this.el.addEventListener('wheel', this.wheel);
     this.resetButton.on('pointerdown', utils.stopPropagation);
     this.resetButton.on('click', this.reset);
-    this.disposers = [
+    this.disposers.push(
+      utils.addElementEventListener(this.el, 'pointerdown', this.pick),
+      utils.addElementEventListener(this.el, 'pointermove', this.drag),
+      utils.addElementEventListener(this.el, 'pointerup', this.drop),
+      utils.addElementEventListener(this.el, 'wheel', this.wheel),
+      utils.addWindowEventListener('resize', this.resize),
       reaction(
         () => [this.viewBox, this.transform],
         () => this.update(),
         { fireImmediately: true },
       ),
-    ];
+    );
+    this.resize();
   }
 
   public unmount() {
     this.disposers.forEach(disposer => disposer());
-    this.disposers = [];
+    this.disposers.length = 0;
     this.resetButton.off();
-    this.el.removeEventListener('pointerdown', this.pick);
-    this.el.removeEventListener('pointermove', this.drag);
-    this.el.removeEventListener('pointerup', this.drop);
-    this.el.removeEventListener('wheel', this.wheel);
   }
 
   @action public reset = () => {
     this.scale = 1;
     this.offsetX = 0;
     this.offsetY = 0;
-  }
-
-  @action public resize() {
-    this.width = this.el.clientWidth;
-    this.height = this.el.clientHeight;
   }
 
   @action public zoom(x: number, y: number, k: number) {
@@ -90,6 +83,11 @@ export class Controller {
   @action public move(x: number, y: number) {
     this.offsetX = x;
     this.offsetY = y;
+  }
+
+  @action private resize = () => {
+    this.width = this.el.clientWidth;
+    this.height = this.el.clientHeight;
   }
 
   private update() {

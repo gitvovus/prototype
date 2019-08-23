@@ -48,8 +48,7 @@ export function coneConstraint(axis: THREE.Vector3, angle: number) {
       return a.clone();
     }
     x.normalize();
-    const q = new THREE.Quaternion();
-    q.setFromAxisAngle(x, angle);
+    const q = new THREE.Quaternion().setFromAxisAngle(x, angle);
     return a.clone().applyQuaternion(q);
   };
 }
@@ -117,11 +116,14 @@ export class ConeDragHandler implements DragHandler {
   private targetMatrix = new THREE.Matrix4();  // target local matrix
   private inverseMatrix = new THREE.Matrix4(); // target world matrix inverse
 
-  private axis = new THREE.Vector3(0, 0, 1);
-  private angle = 0.5;
-  private vector = new THREE.Vector3(0, 0, 1);
+  private axis: THREE.Vector3;
+  private vector: THREE.Vector3;
+  private angle: number;
 
-  public constructor() {
+  public constructor(axis: THREE.Vector3, angle: number) {
+    this.axis = axis.clone().normalize();
+    this.vector = this.axis.clone();
+    this.angle = angle;
     const oz = new THREE.BufferGeometry();
     oz.addAttribute('position', new THREE.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 0, 1]), 3));
     this.root.add(new THREE.LineSegments(oz, new THREE.LineBasicMaterial({ color: 0x800000 })));
@@ -138,7 +140,7 @@ export class ConeDragHandler implements DragHandler {
     });
     this.root.add(new THREE.LineSegments(grid, new THREE.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 })));
     this.handle = new THREE.Mesh(geometry.sphere(0.1, 3), new THREE.MeshPhongMaterial({ color: 0xffff00 }));
-    this.handle.position.set(0, 0, 1);
+    this.handle.position.copy(this.vector);
     this.root.add(this.handle);
     this.constraint = coneConstraint(this.axis, this.angle);
   }
@@ -177,14 +179,13 @@ export class ConeDragHandler implements DragHandler {
     this.vector = this.constraint(v);
     this.handle.position.copy(this.vector);
 
-    const q = new THREE.Quaternion();
-    q.setFromUnitVectors(this.axis, this.vector);
+    const q = new THREE.Quaternion().setFromUnitVectors(this.axis, this.vector);
     const r = new THREE.Matrix4().makeRotationFromQuaternion(q);
     const m = this.targetMatrix.clone().multiply(r);
     m.decompose(this.t!.position, this.t!.quaternion, this.t!.scale);
   }
 
-  private f: (v: THREE.Vector3) => THREE.Vector3 = (v: THREE.Vector3) => v;
+  private f: VectorConstraint = (v: THREE.Vector3) => v;
 }
 
 export class DragControl {
@@ -231,13 +232,12 @@ export class AxisDragControl extends DragControl {
 }
 
 export class ConeDragControl extends DragControl {
-  public constructor() {
+  public constructor(axis: THREE.Vector3, angle: number) {
     super();
     this.root = new THREE.Object3D();
 
-    const item = new ConeDragHandler();
+    const item = new ConeDragHandler(axis, angle);
     this.items = [item];
     this.root.add(item.root);
-    this.root.add(item.handle);
   }
 }

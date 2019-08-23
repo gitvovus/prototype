@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { VueConstructor } from 'vue';
 
 import Floating from '@/components/floating.vue';
 import Home from '@/components/home.vue';
@@ -14,6 +14,8 @@ import View3d from '@/components/view-3d.vue';
 import ViewReact from '@/components/view-react.vue';
 import Views from '@/components/views.vue';
 
+import ImagesPanel from '@/components/items/images-panel.vue';
+import ImagesTool from '@/components/items/images-tool.vue';
 import Item from '@/components/items/item.vue';
 import Mockup from '@/components/items/mockup.vue';
 import Object3D from '@/components/items/object-3d.vue';
@@ -25,26 +27,28 @@ import { Application } from '@/modules/application';
 
 Vue.config.productionTip = false;
 
-Vue.component('floating', Floating);
-Vue.component('home', Home);
-Vue.component('icon', Icon);
-Vue.component('lorem', Lorem);
-Vue.component('modal', Modal);
-Vue.component('sample-view', SampleView);
-Vue.component('scroller', Scroller);
-Vue.component('slider', Slider);
-Vue.component('tools', Tools);
-Vue.component('view-2d', View2d);
-Vue.component('view-3d', View3d);
-Vue.component('view-react', ViewReact);
-Vue.component('views', Views);
-
-Vue.component('item', Item);
-Vue.component('mockup', Mockup);
-Vue.component('object-3d', Object3D);
-
-Vue.component('element-node', ElementNode);
-Vue.component('text-node', TextNode);
+(<Array<[string, VueConstructor<Vue>]>> [
+  ['floating', Floating],
+  ['home', Home],
+  ['icon', Icon],
+  ['lorem', Lorem],
+  ['modal', Modal],
+  ['sample-view', SampleView],
+  ['scroller', Scroller],
+  ['slider', Slider],
+  ['tools', Tools],
+  ['view-2d', View2d],
+  ['view-3d', View3d],
+  ['view-react', ViewReact],
+  ['views', Views],
+  ['images-panel', ImagesPanel],
+  ['images-tool', ImagesTool],
+  ['item', Item],
+  ['mockup', Mockup],
+  ['object-3d', Object3D],
+  ['element-node', ElementNode],
+  ['text-node', TextNode],
+]).forEach(([name, constructor]) => Vue.component(name, constructor));
 
 const app = new Application();
 app.run();

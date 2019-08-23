@@ -3,6 +3,7 @@ import * as THREE from 'three';
 
 import * as svg from '@/lib/svg';
 import { List } from '@/lib/reactive';
+import * as utils from '@/lib/utils';
 import { Scene } from '@/modules/scene';
 import { CameraType } from '@/modules/types';
 
@@ -18,7 +19,7 @@ export class View3d extends List<string> {
   private azimuth: svg.Item;
 
   private element!: HTMLElement;
-  private disposers: Array<() => void> = [];
+  private readonly disposers: Array<() => void> = [];
 
   public constructor() {
     super(['bicubic', 'mockup'], 1);
@@ -33,9 +34,8 @@ export class View3d extends List<string> {
 
   public mount(element: HTMLElement) {
     this.element = element;
-    const canvas = element.getElementsByClassName('v3-canvas')[0] as HTMLCanvasElement;
-    this.scene = new Scene(element, canvas);
-    this.disposers = [
+    this.scene = new Scene(element, element.getElementsByTagName('canvas')[0] as HTMLCanvasElement);
+    this.disposers.push(
       reaction(
         () => this.selectedItem,
         () => this.scene.load(this.selectedItem!),
@@ -51,16 +51,15 @@ export class View3d extends List<string> {
         this.updateTransform,
         { fireImmediately: true },
       ),
-    ];
-    window.addEventListener('resize', this.resize);
+      utils.addWindowEventListener('resize', this.resize),
+    );
     this.resize();
   }
 
   public unmount() {
-    window.removeEventListener('resize', this.resize);
-    this.element = undefined!;
     this.disposers.forEach(disposer => disposer());
-    this.disposers = [];
+    this.disposers.length = 0;
+    this.element = undefined!;
     if (this.scene) {
       this.scene.dispose();
       this.scene = undefined!;

@@ -4,6 +4,7 @@ import { observable, reaction } from 'mobx';
 import App from '@/components/app.vue';
 
 import { List } from '@/lib/reactive';
+import * as utils from '@/lib/utils';
 import { View2d } from '@/modules/view-2d';
 import { View3d } from '@/modules/view-3d';
 import { ViewReact } from '@/modules/view-react';
@@ -27,8 +28,8 @@ export class Application {
   public readonly lorem = new Tools('lorem', 'icon-tools', 'Lorem', false);
   public readonly react = new Tools('react', 'icon-tools', 'React', false);
   public readonly modal = new Tools('modal', 'icon-tools', 'Modal', false);
-  public readonly fullscreen = new Tools('fullscreen', 'icon-fullscreen', 'Fullscreen', false);
 
+  private readonly disposers: Array<() => void> = [];
   private vue!: Vue;
 
   public run() {
@@ -37,6 +38,12 @@ export class Application {
 
     this.vue = new Vue({ render: (h) => h(App, { props: { model: this } }) });
     this.vue.$mount('#app');
+  }
+
+  public mount(el: HTMLElement) {
+  }
+
+  public unmount() {
   }
 
   private setupReactions() {
@@ -48,20 +55,10 @@ export class Application {
       () => this.page,
       () => Vue.nextTick(() => Vue.nextTick(() => window.dispatchEvent(new Event('resize')))),
     );
-    reaction(
-      () => this.fullscreen.show,
-      (show: boolean) => {
-        if (show) {
-          document.getElementsByClassName('main')[0]!.requestFullscreen();
-        } else {
-          document.exitFullscreen();
-        }
-      },
-    );
   }
 
   private setupEvents() {
-    window.addEventListener('contextmenu', (e: Event) => e.preventDefault());
+    window.addEventListener('contextmenu', utils.preventDefault);
     window.addEventListener('keydown', this.keyDown);
   }
 
@@ -81,13 +78,6 @@ export class Application {
         break;
       case 'KeyT':
         this.tools.show = !this.tools.show;
-        break;
-      case 'Enter':
-        if (this.page === Page.VIEWS) {
-          this.fullscreen.show = !this.fullscreen.show;
-        } else {
-          return;
-        }
         break;
       default: return;
     }
