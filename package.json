@@ -10,16 +10,16 @@
   "dependencies": {
     "mobx": "^5.15.4",
     "mobx-vue": "^2.0.10",
-    "three": "^0.107.0",
+    "three": "^0.113.2",
     "vue": "^2.6.11",
     "vue-property-decorator": "^8.4.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-typescript": "^3.11.0",
-    "@vue/cli-service": "^3.11.0",
+    "@vue/cli-plugin-typescript": "^4.2.2",
+    "@vue/cli-service": "^4.2.2",
     "node-sass": "^4.13.1",
     "raw-loader": "^4.0.0",
-    "sass-loader": "^7.3.1",
+    "sass-loader": "^8.0.2",
     "typescript": "^3.5.3",
     "vue-template-compiler": "^2.6.11",
     "worker-loader": "^2.0.0"
